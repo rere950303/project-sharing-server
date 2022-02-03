@@ -17,7 +17,6 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -33,17 +32,11 @@ logging:
   level:
     org.hibernate.SQL: debug
     #    org.hibernate.type: trace
-    io.swagger.models.parameters.AbstractSerializableParameter: error
 
 jwt:
   header: Authorization
   secret: ${jwt.key}
   token-validity-in-seconds: ${jwt.time}
-
-springfox:
-  documentation:
-    swagger:
-      use-model-v3: false
 
 management:
   endpoints:
@@ -55,6 +48,10 @@ spring:
   config:
     activate:
       on-profile: local1
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: create
   h2:
     console:
       enabled: true
@@ -71,6 +68,10 @@ spring:
   config:
     activate:
       on-profile: local2
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: create
   h2:
     console:
       enabled: true
@@ -84,13 +85,19 @@ server:
   port: 8082
 ---
 spring:
+  config:
+    activate:
+      on-profile: dev1
+  redis:
+    host: redis
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDB103Dialect
-  config:
-    activate:
-      on-profile: dev1
+    open-in-view: true
+    hibernate:
+      ddl-auto: none
+
   datasource:
     hikari:
       jdbc-url: ${jdbc.url}
@@ -105,13 +112,17 @@ logging:
     path: /var/log/app/
 ---
 spring:
+  config:
+    activate:
+      on-profile: dev2
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDB103Dialect
-  config:
-    activate:
-      on-profile: dev2
+    open-in-view: true
+    hibernate:
+      ddl-auto: none
+
   datasource:
     hikari:
       jdbc-url: ${jdbc.url}

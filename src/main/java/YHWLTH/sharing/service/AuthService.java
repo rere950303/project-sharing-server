@@ -26,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -94,5 +95,12 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return authentication;
+    }
+
+    @Transactional
+    public ResponseEntity<CommonResult> withdrawal(String username) {
+        userRepo.deleteUserByUsername(username);
+        CommonResult successResult = ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK);
+        return new ResponseEntity<>(successResult, HttpStatus.OK);
     }
 }

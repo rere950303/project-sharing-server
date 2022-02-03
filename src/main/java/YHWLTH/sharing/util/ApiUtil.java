@@ -16,6 +16,7 @@ public class ApiUtil {
 
     public static final String FAIL_BAD_REQUEST = "400";
     public static final String FAIL_UNAUTHORIZED = "401";
+    public static final String FAIL_ACCESS_DENIED = "403";
     public static final String FAIL_NOT_FOUND = "404";
 
 

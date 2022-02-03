@@ -32,8 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-        web.ignoring().mvcMatchers("/swagger-resources/**", "/swagger-ui/**", "/v2/api-docs", "/webjars/**",
-                "/favicon.ico", "/h2-console/**");
+        web.ignoring().mvcMatchers("/swagger-ui/swagger-ui.css.map", "/swagger-ui/swagger-ui-bundle.js.map",
+                "/swagger-ui/springfox.js.map", "/swagger-ui/swagger-ui-standalone-preset.js.map");
     }
 
     @Override
@@ -57,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .mvcMatchers(whiteList).permitAll()
+                .mvcMatchers("/swagger-resources/**", "/swagger-ui/**", "/v3/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
 
                 .and()

@@ -7,6 +7,7 @@ import YHWLTH.sharing.ex.AuthenticationEx;
 import YHWLTH.sharing.ex.SignUpEx;
 import YHWLTH.sharing.util.ApiUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -60,5 +61,12 @@ public class ExControllerAdvice {
     public CommonResult badCredentialsExHandle(BadCredentialsException ex) {
 
         return ApiUtil.getFailResult(null, ApiUtil.FAIL_BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public CommonResult accessDeniedExHandle(AccessDeniedException ex) {
+
+        return ApiUtil.getFailResult(null, ApiUtil.FAIL_ACCESS_DENIED, ex.getMessage());
     }
 }
