@@ -16,6 +16,10 @@ public class SignUpDTO {
     @Schema(description = "username", example = "양형욱", required = true)
     private String username;
 
+    @NotBlank(message = "학번을 입력해주세요.")
+    @Schema(description = "studentId", example = "2014xxxxxx", required = true)
+    private String studentId;
+
     @NotBlank(message = "비밀번호를 입력해주세요.")
     @Schema(description = "password", example = "1234", required = true)
     private String password;

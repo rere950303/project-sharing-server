@@ -1,5 +1,6 @@
 package YHWLTH.sharing.service;
 
+import YHWLTH.sharing.context.UserContext;
 import YHWLTH.sharing.entity.User;
 import YHWLTH.sharing.ex.AuthenticationEx;
 import YHWLTH.sharing.repo.UserRepo;
@@ -23,10 +24,6 @@ public class UserService implements UserDetailsService {
             throw new AuthenticationEx("학생증 인증을 먼저 받아주세요.");
         }
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole().getRole())
-                .build();
+        return new UserContext(user);
     }
 }

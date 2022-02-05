@@ -1,10 +1,12 @@
 package YHWLTH.sharing.controller;
 
+import YHWLTH.sharing.annotation.secuirty.CurrentUser;
 import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.request.LoginDTO;
 import YHWLTH.sharing.dto.request.SignUpDTO;
 import YHWLTH.sharing.dto.response.SignUpResponseDTO;
 import YHWLTH.sharing.dto.response.TokenDTO;
+import YHWLTH.sharing.entity.User;
 import YHWLTH.sharing.service.AuthService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +17,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -61,12 +66,13 @@ public class AuthController {
         return authService.logout(request);
     }
 
-    @PostMapping("/withdrawal/{username}")
+    @PostMapping("/withdrawal/{studentId}")
+    @PreAuthorize(value = "#user.studentId == #studentId")
     @ApiResponse(responseCode = "200", description = "탈퇴 성공", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     @Operation(summary = "탈퇴", description = "탈퇴를 진행하는 메소드")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CommonResult> withdrawal(@PathVariable String username) {
+    public ResponseEntity<CommonResult> withdrawal(@PathVariable String studentId, @ApiIgnore @CurrentUser User user) {
 
-        return authService.withdrawal(username);
+        return authService.withdrawal(studentId);
     }
 }

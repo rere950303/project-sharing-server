@@ -28,6 +28,8 @@ public class User extends BaseTimeEntity {
     @Column(unique = true)
     private String username;
 
+    private String studentId;
+
     private String password;
 
     private Boolean isPermit;
@@ -36,7 +38,8 @@ public class User extends BaseTimeEntity {
     private Role role;
 
     public User(SignUpDTO signUpDTO, PasswordEncoder passwordEncoder) {
-        this.username = signUpDTO.getUsername();
+        this.studentId = signUpDTO.getStudentId();
+        this.username = signUpDTO.getUsername() + signUpDTO.getStudentId();
         this.password = passwordEncoder.encode(signUpDTO.getPassword());
         this.role = Role.USER;
         isPermit = false;

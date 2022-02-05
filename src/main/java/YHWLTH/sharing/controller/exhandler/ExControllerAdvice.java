@@ -66,7 +66,13 @@ public class ExControllerAdvice {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public CommonResult accessDeniedExHandle(AccessDeniedException ex) {
+        String message = null;
+        if (ex.getMessage().equals("Access is denied")) {
+            message = "접근 권한이 없습니다.";
+        } else {
+            message = ex.getMessage();
+        }
 
-        return ApiUtil.getFailResult(null, ApiUtil.FAIL_ACCESS_DENIED, ex.getMessage());
+        return ApiUtil.getFailResult(null, ApiUtil.FAIL_ACCESS_DENIED, message);
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,7 +46,7 @@ public class AuthService {
 
     public ResponseEntity<SignUpResponseDTO> signUp(SignUpDTO signUpDTO) throws AlreadyExistsEx {
 
-        if (userRepo.findUserByUsername(signUpDTO.getUsername()).orElse(null) != null) {
+        if (userRepo.findUserByStudentId(signUpDTO.getStudentId()).orElse(null) != null) {
             throw new AlreadyExistsEx("이미 존재하는 아이디입니다.");
         }
         if (!signUpDTO.getPassword().equals(signUpDTO.getPasswordConfirm())) {
@@ -90,7 +91,8 @@ public class AuthService {
     }
 
     private Authentication getAuthentication(LoginDTO loginDTO) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                loginDTO.getUsername() + loginDTO.getStudentId(), loginDTO.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -98,8 +100,8 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseEntity<CommonResult> withdrawal(String username) {
-        userRepo.deleteUserByUsername(username);
+    public ResponseEntity<CommonResult> withdrawal(String studentId) {
+        userRepo.deleteUserByStudentId(studentId);
         CommonResult successResult = ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK);
         return new ResponseEntity<>(successResult, HttpStatus.OK);
     }
