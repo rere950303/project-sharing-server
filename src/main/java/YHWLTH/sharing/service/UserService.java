@@ -2,13 +2,17 @@ package YHWLTH.sharing.service;
 
 import YHWLTH.sharing.context.UserContext;
 import YHWLTH.sharing.entity.User;
+import YHWLTH.sharing.entity.UserRole;
 import YHWLTH.sharing.ex.AuthenticationEx;
 import YHWLTH.sharing.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,12 @@ public class UserService implements UserDetailsService {
             throw new AuthenticationEx("학생증 인증을 먼저 받아주세요.");
         }
 
-        return new UserContext(user);
+        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+        for (UserRole role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole().getRole()));
+        }
+
+        return new UserContext(user, authorities);
     }
 }

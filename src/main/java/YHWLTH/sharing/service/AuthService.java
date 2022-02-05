@@ -5,12 +5,16 @@ import YHWLTH.sharing.dto.request.LoginDTO;
 import YHWLTH.sharing.dto.request.SignUpDTO;
 import YHWLTH.sharing.dto.response.SignUpResponseDTO;
 import YHWLTH.sharing.dto.response.TokenDTO;
+import YHWLTH.sharing.entity.Role;
 import YHWLTH.sharing.entity.User;
+import YHWLTH.sharing.entity.UserRole;
 import YHWLTH.sharing.ex.AlreadyExistsEx;
 import YHWLTH.sharing.ex.SignUpEx;
 import YHWLTH.sharing.jwt.JwtFilter;
 import YHWLTH.sharing.jwt.TokenProvider;
+import YHWLTH.sharing.repo.RoleRepo;
 import YHWLTH.sharing.repo.UserRepo;
+import YHWLTH.sharing.repo.UserRoleRepo;
 import YHWLTH.sharing.util.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +22,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -39,26 +41,41 @@ import java.util.concurrent.TimeUnit;
 public class AuthService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final RoleRepo roleRepo;
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final StringRedisTemplate redisTemplate;
+    private final UserRoleRepo userRoleRepo;
 
     public ResponseEntity<SignUpResponseDTO> signUp(SignUpDTO signUpDTO) throws AlreadyExistsEx {
-
         if (userRepo.findUserByStudentId(signUpDTO.getStudentId()).orElse(null) != null) {
             throw new AlreadyExistsEx("이미 존재하는 아이디입니다.");
         }
+
         if (!signUpDTO.getPassword().equals(signUpDTO.getPasswordConfirm())) {
             throw new SignUpEx("비밀번호가 일치하지 않습니다.", signUpDTO);
         }
 
-        userRepo.save(new User(signUpDTO, passwordEncoder));
+        Role role = roleRepo.findByRole("USER").orElse(null);
+
+        if (role == null) {
+            throw new SignUpEx("존재하지 않는 권한입니다.");
+        }
+
+        createUser(signUpDTO, role);
 
         SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO(signUpDTO.getUsername());
         ApiUtil.makeSuccessResult(signUpResponseDTO, ApiUtil.SUCCESS_CREATED);
 
         return new ResponseEntity<>(signUpResponseDTO, HttpStatus.OK);
+    }
+
+    private void createUser(SignUpDTO signUpDTO, Role role) {
+        User user = new User(signUpDTO, passwordEncoder);
+        UserRole userRole = new UserRole(user, role);
+        user.addRoles(userRole);
+        userRoleRepo.save(userRole);
     }
 
     public ResponseEntity<TokenDTO> login(LoginDTO loginDTO) {

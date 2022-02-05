@@ -1,16 +1,31 @@
 package YHWLTH.sharing.entity;
 
-public enum Role {
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-    USER("USER"), ADMIN("ADMIN");
+import javax.persistence.*;
 
-    private final String role;
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Getter
+@SequenceGenerator(
+        name = "ROLE_SEQ_GENERATOR",
+        sequenceName = "ROLE_SEQ",
+        allocationSize = 1
+)
+public class Role {
 
-    Role(String role) {
+    @Id
+    @Column(name = "role_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROLE_SEQ_GENERATOR")
+    private Long id;
+
+    private String role;
+
+    public Role(String role) {
         this.role = role;
-    }
-
-    public String getRole() {
-        return role;
     }
 }

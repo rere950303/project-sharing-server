@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,14 +36,23 @@ public class User extends BaseTimeEntity {
 
     private Boolean isPermit;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserRole> roles = new ArrayList<>();
 
     public User(SignUpDTO signUpDTO, PasswordEncoder passwordEncoder) {
         this.studentId = signUpDTO.getStudentId();
         this.username = signUpDTO.getUsername() + signUpDTO.getStudentId();
         this.password = passwordEncoder.encode(signUpDTO.getPassword());
-        this.role = Role.USER;
         isPermit = false;
+    }
+
+    public User(String username, String studentId, String password) {
+        this.username = username;
+        this.studentId = studentId;
+        this.password = password;
+    }
+
+    public void addRoles(UserRole userRole) {
+        this.roles.add(userRole);
     }
 }
