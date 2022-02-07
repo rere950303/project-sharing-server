@@ -70,8 +70,8 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "탈퇴 성공", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     @Operation(summary = "탈퇴", description = "탈퇴를 진행하는 메소드")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CommonResult> withdrawal(@PathVariable String studentId, @ApiIgnore @CurrentUser User user) {
+    public ResponseEntity<CommonResult> withdrawal(@PathVariable String studentId, @ApiIgnore @CurrentUser User user, @ApiIgnore HttpServletRequest request) {
 
-        return authService.withdrawal(studentId);
+        return authService.withdrawal(studentId, request);
     }
 }

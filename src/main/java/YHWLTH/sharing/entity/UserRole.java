@@ -15,7 +15,7 @@ import javax.persistence.*;
         name = "USERROLE_SEQ_GENERATOR",
         sequenceName = "USERROLE_SEQ",
         allocationSize = 1)
-public class UserRole extends BaseTimeEntity {
+public class UserRole extends BaseEntity {
 
     @Id
     @Column(name = "userrole_id")

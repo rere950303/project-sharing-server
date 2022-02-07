@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.util.InputMismatchException;
 
 @RestControllerAdvice
@@ -74,5 +75,17 @@ public class ExControllerAdvice {
         }
 
         return ApiUtil.getFailResult(null, ApiUtil.FAIL_ACCESS_DENIED, message);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CommonResult illegalArgumentException(IllegalArgumentException ex) {
+        return ApiUtil.getFailResult(null, ApiUtil.FAIL_BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public CommonResult iOException(IOException ex) {
+        return ApiUtil.getFailResult(null, ApiUtil.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 }

@@ -99,6 +99,7 @@ public class AuthService {
     }
 
     public ResponseEntity<CommonResult> logout(HttpServletRequest request) {
+        SecurityContextHolder.clearContext();
         String token = tokenProvider.resolveToken(request);
         Date expirationDate = tokenProvider.getExpirationDate(token);
         redisTemplate.opsForValue().set(token, "logout", expirationDate.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
@@ -117,9 +118,9 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseEntity<CommonResult> withdrawal(String studentId) {
+    public ResponseEntity<CommonResult> withdrawal(String studentId, HttpServletRequest request) {
         userRepo.deleteUserByStudentId(studentId);
-        CommonResult successResult = ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK);
-        return new ResponseEntity<>(successResult, HttpStatus.OK);
+
+        return logout(request);
     }
 }

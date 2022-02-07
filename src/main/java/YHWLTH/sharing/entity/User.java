@@ -20,7 +20,7 @@ import java.util.List;
         sequenceName = "USER_SEQ",
         allocationSize = 1
 )
-public class User extends BaseTimeEntity {
+public class User extends BaseEntity {
 
     @Id
     @Column(name = "user_id")
@@ -35,6 +35,9 @@ public class User extends BaseTimeEntity {
     private String password;
 
     private Boolean isPermit;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<ShareItem> shareItemList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserRole> roles = new ArrayList<>();

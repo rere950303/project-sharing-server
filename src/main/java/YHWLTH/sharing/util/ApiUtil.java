@@ -18,8 +18,7 @@ public class ApiUtil {
     public static final String FAIL_UNAUTHORIZED = "401";
     public static final String FAIL_ACCESS_DENIED = "403";
     public static final String FAIL_NOT_FOUND = "404";
-
-
+    public static final String INTERNAL_SERVER_ERROR = "500";
 
     public static void makeSuccessResult(CommonResult successResult, String code) {
         successResult.setResult(ApiUtil.SUCCESS);
