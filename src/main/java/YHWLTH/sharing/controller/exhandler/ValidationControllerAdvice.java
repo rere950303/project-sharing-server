@@ -41,6 +41,24 @@ public class ValidationControllerAdvice {
         return ApiUtil.getFailResult(validationMsg, ApiUtil.FAIL_BAD_REQUEST, null);
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CommonResult constraintViolationExHandle(ConstraintViolationException ex) {
+        HashMap<String, String> validationMsg = new HashMap<>();
+        Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
+
+        for (ConstraintViolation<?> violation : violations) {
+            String className = violation.getRootBeanClass().getSimpleName();
+            String property = violation.getPropertyPath().toString();
+            String msg = violation.getMessage();
+
+            String format = String.format("%s.%s %s", className, property, msg);
+            validationMsg.put(property, format);
+        }
+
+        return ApiUtil.getFailResult(validationMsg, ApiUtil.FAIL_BAD_REQUEST, null);
+    }
+
     public HashMap getValidationMsg(List<FieldError> fieldErrors) {
         HashMap<String, String> validationMsg = new HashMap<>();
 

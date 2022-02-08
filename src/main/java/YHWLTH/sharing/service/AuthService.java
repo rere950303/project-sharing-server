@@ -1,5 +1,6 @@
 package YHWLTH.sharing.service;
 
+import YHWLTH.sharing.context.UserContext;
 import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.request.LoginDTO;
 import YHWLTH.sharing.dto.request.SignUpDTO;
@@ -63,19 +64,21 @@ public class AuthService {
             throw new SignUpEx("존재하지 않는 권한입니다.");
         }
 
-        createUser(signUpDTO, role);
+        Long userId = createUser(signUpDTO, role);
 
-        SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO(signUpDTO.getUsername());
+        SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO(userId, signUpDTO.getUsername());
         ApiUtil.makeSuccessResult(signUpResponseDTO, ApiUtil.SUCCESS_CREATED);
 
         return new ResponseEntity<>(signUpResponseDTO, HttpStatus.OK);
     }
 
-    private void createUser(SignUpDTO signUpDTO, Role role) {
+    private Long createUser(SignUpDTO signUpDTO, Role role) {
         User user = new User(signUpDTO, passwordEncoder);
         UserRole userRole = new UserRole(user, role);
         user.addRoles(userRole);
         userRoleRepo.save(userRole);
+
+        return user.getUserId();
     }
 
     public ResponseEntity<TokenDTO> login(LoginDTO loginDTO) {
@@ -92,7 +95,9 @@ public class AuthService {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        TokenDTO tokenDTO = new TokenDTO(loginDTO.getUsername(), jwt);
+
+        TokenDTO tokenDTO = new TokenDTO(((UserContext) authentication.getPrincipal()).getUser().getUserId(),
+                loginDTO.getUsername(), jwt);
         ApiUtil.makeSuccessResult(tokenDTO, ApiUtil.SUCCESS_OK);
 
         return new ResponseEntity<>(tokenDTO, httpHeaders, HttpStatus.OK);
@@ -118,8 +123,8 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseEntity<CommonResult> withdrawal(String studentId, HttpServletRequest request) {
-        userRepo.deleteUserByStudentId(studentId);
+    public ResponseEntity<CommonResult> delete(Long userId, HttpServletRequest request) {
+        userRepo.deleteById(Long.valueOf(userId));
 
         return logout(request);
     }

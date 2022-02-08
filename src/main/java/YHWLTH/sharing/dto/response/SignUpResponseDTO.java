@@ -9,10 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SignUpResponseDTO extends CommonResult {
 
+    @Schema(description = "userId", example = "1")
+    private Long userId;
+
     @Schema(description = "username", example = "양형욱")
     private String username;
 
-    public SignUpResponseDTO(String username) {
+    public SignUpResponseDTO(Long userId, String username) {
+        this.userId = userId;
         this.username = username;
     }
 }

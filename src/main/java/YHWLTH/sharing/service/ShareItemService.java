@@ -2,6 +2,7 @@ package YHWLTH.sharing.service;
 
 import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.request.ShareItemRegisterDTO;
+import YHWLTH.sharing.dto.request.ShareItemUpdateDTO;
 import YHWLTH.sharing.entity.Image;
 import YHWLTH.sharing.entity.ShareItem;
 import YHWLTH.sharing.entity.User;
@@ -13,8 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -23,7 +26,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,28 +39,23 @@ public class ShareItemService {
     private String path;
 
     public ResponseEntity<CommonResult> register(ShareItemRegisterDTO registerDTO) throws IOException {
-        Optional<User> user = userRepo.findById(registerDTO.getUserId());
+        User user = userRepo.findById(registerDTO.getUserId()).orElse(null);
 
-        if (user.orElse(null) == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("해당되는 사용자가 없습니다.");
         }
 
         List<Image> images = storeImages(registerDTO.getImages());
-        ShareItem shareItem = new ShareItem(registerDTO, images, user.orElse(null));
+        ShareItem shareItem = new ShareItem(registerDTO, images, user);
 
-        createMapping(shareItem, user.orElse(null), images);
-
-        shareItemRepo.save(shareItem);
-        CommonResult successResult = ApiUtil.getSuccessResult(ApiUtil.SUCCESS_CREATED);
-        return new ResponseEntity<>(successResult, HttpStatus.CREATED);
-    }
-
-    private void createMapping(ShareItem shareItem, User user, List<Image> images) {
         user.getShareItemList().add(shareItem);
         images.forEach(image -> image.makeMappingShareItem(shareItem));
+        shareItemRepo.save(shareItem);
+
+        return new ResponseEntity<>(ApiUtil.getSuccessResult(ApiUtil.SUCCESS_CREATED), HttpStatus.CREATED);
     }
 
-    private List<Image> storeImages(List<MultipartFile> images) throws IOException {
+    public List<Image> storeImages(List<MultipartFile> images) throws IOException {
         ArrayList<Image> result = new ArrayList<>();
 
         for (MultipartFile image : images) {
@@ -90,5 +87,48 @@ public class ShareItemService {
 
     private String getStoredFileName(String originalFileName) {
         return UUID.randomUUID().toString() + "_" + originalFileName;
+    }
+
+    @Transactional
+    public ResponseEntity<CommonResult> update(ShareItemUpdateDTO updateDTO) throws IOException {
+        ShareItem shareItem = shareItemRepo.findById(updateDTO.getShareItemId()).orElse(null);
+
+        if (shareItem == null) {
+            throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
+        }
+
+        List<Image> images = storeImages(updateDTO.getImages());
+
+        shareItem.update(updateDTO, images);
+        images.forEach(image -> image.makeMappingShareItem(shareItem));
+
+        return new ResponseEntity<>(ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK), HttpStatus.OK);
+    }
+
+    public ResponseEntity<CommonResult> removeImage(String imageName) {
+        imageName = URLDecoder.decode(imageName, StandardCharsets.UTF_8);
+        File file = new File(path + imageName);
+        boolean result = file.delete();
+
+        return result ? new ResponseEntity<>(ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK), HttpStatus.OK) :
+                new ResponseEntity<>(ApiUtil.getFailResult(null, ApiUtil.INTERNAL_SERVER_ERROR,
+                        "사진 삭제에 실패했습니다. 다시 시도해 주세요."), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Transactional
+    public ResponseEntity<CommonResult> remove(Long shareItemId, User user) {
+        ShareItem shareItem = shareItemRepo.findById(shareItemId).orElse(null);
+
+        if (shareItem == null) {
+            throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
+        }
+
+        if (!shareItem.getUser().getUserId().equals(user.getUserId())) {
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
+
+        shareItemRepo.delete(shareItem);
+
+        return new ResponseEntity<>(ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK), HttpStatus.OK);
     }
 }

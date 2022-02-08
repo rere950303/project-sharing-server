@@ -9,6 +9,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class TokenDTO extends CommonResult {
 
+    @Schema(description = "userId", example = "1")
+    private Long userId;
+
     @Schema(description = "username", example = "양형욱")
     private String username;
 
