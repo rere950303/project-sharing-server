@@ -90,11 +90,15 @@ public class ShareItemService {
     }
 
     @Transactional
-    public ResponseEntity<CommonResult> update(ShareItemUpdateDTO updateDTO) throws IOException {
+    public ResponseEntity<CommonResult> update(ShareItemUpdateDTO updateDTO, User user) throws IOException {
         ShareItem shareItem = shareItemRepo.findById(updateDTO.getShareItemId()).orElse(null);
 
         if (shareItem == null) {
             throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
+        }
+
+        if (!shareItem.getUser().getUserId().equals(user.getUserId())) {
+            throw new java.nio.file.AccessDeniedException("업데이트 권한이 없습니다.");
         }
 
         List<Image> images = storeImages(updateDTO.getImages());

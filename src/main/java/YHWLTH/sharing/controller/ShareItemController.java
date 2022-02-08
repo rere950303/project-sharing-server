@@ -45,15 +45,15 @@ public class ShareItemController {
         return shareItemService.register(registerDTO);
     }
 
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "아아템 업데이트 성공", content = @Content(schema = @Schema(implementation = CommonResult.class))),
             @ApiResponse(responseCode = "400", description = "아이템 업데이트 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "아이템 업데이트", description = "아이템 업데이트를 진행하는 메소드")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CommonResult> update(@Valid @ModelAttribute ShareItemUpdateDTO updateDTO) throws IOException {
-        return shareItemService.update(updateDTO);
+    public ResponseEntity<CommonResult> update(@Valid @ModelAttribute ShareItemUpdateDTO updateDTO, @ApiIgnore @CurrentUser User user) throws IOException {
+        return shareItemService.update(updateDTO, user);
     }
 
     @DeleteMapping("/image")
