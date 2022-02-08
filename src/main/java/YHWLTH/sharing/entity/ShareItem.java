@@ -33,6 +33,7 @@ public class ShareItem {
     private String kakaoId;
 
     @Lob
+    @Column(name = "description")
     private String desc;
 
     @ManyToOne(fetch = FetchType.LAZY)
