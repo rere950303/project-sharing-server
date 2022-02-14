@@ -1,5 +1,7 @@
 package YHWLTH.sharing.config;
 
+import YHWLTH.sharing.dto.common.CommonResult;
+import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -13,8 +15,11 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class SwaggerConfig {
 
     @Bean
-    public Docket swaggerApi() {
+    public Docket swaggerApi(TypeResolver typeResolver) {
         return new Docket(DocumentationType.OAS_30)
+                .additionalModels(
+                        typeResolver.resolve(CommonResult.class)
+                )
                 .apiInfo(swaggerInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("YHWLTH.sharing.controller"))
@@ -28,7 +33,7 @@ public class SwaggerConfig {
                 .description("Description for RESTful API of sharing")
                 .license("yhw")
                 .licenseUrl("https://rere950303.github.io")
-                .version("1")
+                .version("1.2(2022-02-14)")
                 .build();
     }
 }

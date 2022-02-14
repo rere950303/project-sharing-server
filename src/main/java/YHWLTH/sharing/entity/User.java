@@ -1,7 +1,6 @@
 package YHWLTH.sharing.entity;
 
 import YHWLTH.sharing.dto.request.SignUpDTO;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @SequenceGenerator(

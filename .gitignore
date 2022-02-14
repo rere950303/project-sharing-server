@@ -27,3 +27,4 @@ HELP.md
 out
 docker-compose.yml
 src/test
+.env

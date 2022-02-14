@@ -4,6 +4,7 @@ import YHWLTH.sharing.annotation.secuirty.CurrentUser;
 import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.request.ShareItemRegisterDTO;
 import YHWLTH.sharing.dto.request.ShareItemUpdateDTO;
+import YHWLTH.sharing.dto.response.ShareItemReadDTO;
 import YHWLTH.sharing.entity.User;
 import YHWLTH.sharing.service.ShareItemService;
 import io.swagger.annotations.Api;
@@ -48,7 +49,8 @@ public class ShareItemController {
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "아아템 업데이트 성공", content = @Content(schema = @Schema(implementation = CommonResult.class))),
-            @ApiResponse(responseCode = "400", description = "아이템 업데이트 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
+            @ApiResponse(responseCode = "400", description = "아이템 업데이트 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
+            @ApiResponse(responseCode = "403", description = "아이템 업데이트 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "아이템 업데이트", description = "아이템 업데이트를 진행하는 메소드")
     @ResponseStatus(HttpStatus.OK)

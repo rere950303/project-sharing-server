@@ -6,7 +6,10 @@ import YHWLTH.sharing.ex.AlreadyExistsEx;
 import YHWLTH.sharing.ex.AuthenticationEx;
 import YHWLTH.sharing.ex.SignUpEx;
 import YHWLTH.sharing.util.ApiUtil;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.springframework.core.convert.ConversionException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -79,13 +82,25 @@ public class ExControllerAdvice {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public CommonResult illegalArgumentException(IllegalArgumentException ex) {
+    public CommonResult illegalArgumentExHandle(IllegalArgumentException ex) {
+        return ApiUtil.getFailResult(null, ApiUtil.FAIL_BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CommonResult illegalStateExHandle(IllegalStateException ex) {
         return ApiUtil.getFailResult(null, ApiUtil.FAIL_BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public CommonResult iOException(IOException ex) {
+    public CommonResult iOExHandle(IOException ex) {
         return ApiUtil.getFailResult(null, ApiUtil.INTERNAL_SERVER_ERROR, ex.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CommonResult httpMessageConversionExHandle(HttpMessageConversionException ex) {
+        return ApiUtil.getFailResult(null, ApiUtil.FAIL_BAD_REQUEST, "형식을 지켜주세요.");
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @SequenceGenerator(
         name = "SHAREITEM_SEQ_GENERATOR",
         sequenceName = "SHAREITEM_SEQ",

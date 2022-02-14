@@ -3,6 +3,7 @@ package YHWLTH.sharing.service;
 import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.request.ShareItemRegisterDTO;
 import YHWLTH.sharing.dto.request.ShareItemUpdateDTO;
+import YHWLTH.sharing.dto.response.ShareItemReadDTO;
 import YHWLTH.sharing.entity.Image;
 import YHWLTH.sharing.entity.ShareItem;
 import YHWLTH.sharing.entity.User;
@@ -98,7 +99,7 @@ public class ShareItemService {
         }
 
         if (!shareItem.getUser().getUserId().equals(user.getUserId())) {
-            throw new java.nio.file.AccessDeniedException("업데이트 권한이 없습니다.");
+            throw new AccessDeniedException("업데이트 권한이 없습니다.");
         }
 
         List<Image> images = storeImages(updateDTO.getImages());
@@ -134,5 +135,19 @@ public class ShareItemService {
         shareItemRepo.delete(shareItem);
 
         return new ResponseEntity<>(ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK), HttpStatus.OK);
+    }
+
+    public ResponseEntity<ShareItemReadDTO> read(Long shareItemId) {
+        ShareItem shareItem = shareItemRepo.findById(shareItemId).orElse(null);
+
+        if (shareItem == null) {
+            throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
+        }
+
+        User user = shareItem.getUser();
+        ShareItemReadDTO shareItemReadDTO = new ShareItemReadDTO(shareItem, user);
+        ApiUtil.makeSuccessResult(shareItemReadDTO, ApiUtil.SUCCESS_OK);
+
+        return new ResponseEntity<>(shareItemReadDTO, HttpStatus.OK);
     }
 }

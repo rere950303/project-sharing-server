@@ -88,7 +88,7 @@ public class AuthService {
             authentication = getAuthentication(loginDTO);
         } catch (BadCredentialsException ex) {
             log.info("[AuthService][login][BadCredentialsException]username: {}", loginDTO.getUsername());
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            throw new BadCredentialsException("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
 
         String jwt = tokenProvider.createToken(authentication);
