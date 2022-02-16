@@ -13,6 +13,8 @@ import YHWLTH.sharing.util.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -149,5 +152,17 @@ public class ShareItemService {
         ApiUtil.makeSuccessResult(shareItemReadDTO, ApiUtil.SUCCESS_OK);
 
         return new ResponseEntity<>(shareItemReadDTO, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Resource> getImage(String imageName) throws MalformedURLException {
+        imageName = URLDecoder.decode(imageName, StandardCharsets.UTF_8);
+        File file = new File(path + imageName);
+
+        try {
+            return new ResponseEntity<>(new UrlResource("file:" + file), HttpStatus.OK);
+        } catch (MalformedURLException e) {
+            log.info("[ShareItemService][getImage]MalformedURLException");
+            throw new MalformedURLException("잘못된 URL 형식입니다. 다시 시도해주세요.");
+        }
     }
 }

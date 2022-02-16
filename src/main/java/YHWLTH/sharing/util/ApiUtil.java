@@ -21,7 +21,7 @@ public class ApiUtil {
     public static final String INTERNAL_SERVER_ERROR = "500";
 
     public static void makeSuccessResult(CommonResult successResult, String code) {
-        successResult.setResult(ApiUtil.SUCCESS);
+        successResult.setResult(SUCCESS);
         successResult.setCode(code);
     }
 

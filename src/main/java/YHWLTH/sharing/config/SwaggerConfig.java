@@ -4,6 +4,7 @@ import YHWLTH.sharing.dto.common.CommonResult;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.UrlResource;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -18,7 +19,8 @@ public class SwaggerConfig {
     public Docket swaggerApi(TypeResolver typeResolver) {
         return new Docket(DocumentationType.OAS_30)
                 .additionalModels(
-                        typeResolver.resolve(CommonResult.class)
+                        typeResolver.resolve(CommonResult.class),
+                        typeResolver.resolve(UrlResource.class)
                 )
                 .apiInfo(swaggerInfo())
                 .select()

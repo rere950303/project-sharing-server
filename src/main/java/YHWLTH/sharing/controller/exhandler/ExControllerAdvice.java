@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.InputMismatchException;
 
 @RestControllerAdvice
@@ -102,5 +103,11 @@ public class ExControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CommonResult httpMessageConversionExHandle(HttpMessageConversionException ex) {
         return ApiUtil.getFailResult(null, ApiUtil.FAIL_BAD_REQUEST, "형식을 지켜주세요.");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CommonResult malformedURLExHandle(MalformedURLException ex) {
+        return ApiUtil.getFailResult(null, ApiUtil.FAIL_BAD_REQUEST, ex.getMessage());
     }
 }
