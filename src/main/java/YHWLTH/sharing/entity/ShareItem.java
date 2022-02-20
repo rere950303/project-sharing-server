@@ -32,6 +32,10 @@ public class ShareItem {
 
     private String kakaoId;
 
+    private Long deposit;
+
+    private Boolean isShared = false;
+
     @Lob
     @Column(name = "description")
     private String desc;
@@ -50,6 +54,7 @@ public class ShareItem {
         this.desc = registerDTO.getDesc();
         this.images = images;
         this.user = user;
+        this.deposit = registerDTO.getDeposit();
     }
 
     public void update(ShareItemUpdateDTO updateDTO, List<Image> images) {
@@ -57,5 +62,14 @@ public class ShareItem {
         this.kakaoId = !StringUtils.hasText(updateDTO.getKakaoId()) ? this.kakaoId : updateDTO.getKakaoId();
         this.desc = !StringUtils.hasText(updateDTO.getDesc()) ? this.desc : updateDTO.getDesc();
         this.images.addAll(images);
+        this.deposit = updateDTO.getDeposit() == null ? this.deposit : updateDTO.getDeposit();
+    }
+
+    public void changeIsShared() {
+        if (this.isShared) {
+            this.isShared = false;
+        } else {
+            this.isShared = true;
+        }
     }
 }

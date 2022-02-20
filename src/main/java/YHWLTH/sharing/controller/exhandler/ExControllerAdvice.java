@@ -4,6 +4,7 @@ import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.response.SignUpResponseDTO;
 import YHWLTH.sharing.ex.AlreadyExistsEx;
 import YHWLTH.sharing.ex.AuthenticationEx;
+import YHWLTH.sharing.ex.PointShortageEx;
 import YHWLTH.sharing.ex.SignUpEx;
 import YHWLTH.sharing.util.ApiUtil;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -109,5 +110,11 @@ public class ExControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CommonResult malformedURLExHandle(MalformedURLException ex) {
         return ApiUtil.getFailResult(null, ApiUtil.FAIL_BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
+    public CommonResult pointShortageExHandle(PointShortageEx ex) {
+        return ApiUtil.getFailResult(null, ApiUtil.PAYMENT_REQUIRED, ex.getMessage());
     }
 }

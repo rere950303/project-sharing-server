@@ -39,4 +39,8 @@ public class ShareItemRegisterDTO {
     @NotBlank(message = "카카오톡 아이디를 입력해주세요.")
     @ApiParam(value = "kakaoId", required = true)
     private String kakaoId;
+
+    @NotNull(message = "보증금을 입력해주세요.")
+    @ApiParam(value = "보증금", required = true)
+    private Long deposit;
 }

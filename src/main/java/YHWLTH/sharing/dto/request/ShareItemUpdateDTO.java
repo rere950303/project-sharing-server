@@ -30,4 +30,7 @@ public class ShareItemUpdateDTO {
 
     @ApiParam(value = "kakaoId")
     private String kakaoId;
+
+    @ApiParam(value = "보증금")
+    private Long deposit;
 }

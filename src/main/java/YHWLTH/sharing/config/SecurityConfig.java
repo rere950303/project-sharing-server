@@ -45,8 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Audi
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-        web.ignoring().mvcMatchers("/swagger-ui/swagger-ui.css.map", "/swagger-ui/swagger-ui-bundle.js.map",
-                "/swagger-ui/springfox.js.map", "/swagger-ui/swagger-ui-standalone-preset.js.map", "/error", "/h2-console/**");
+        web.ignoring().mvcMatchers("/swagger-ui/springfox.css", "/swagger-ui/favicon-32x32.png", "/swagger-ui/swagger-ui-bundle.js", "/swagger-ui/springfox.js"
+        , "/swagger-ui/swagger-ui-standalone-preset.js", "/swagger-ui/swagger-ui.css.map", "/swagger-ui/swagger-ui-bundle.js.map", "/swagger-ui/swagger-ui-standalone-preset.js.map",
+                "/swagger-ui/springfox.js.map");
     }
 
     @Override

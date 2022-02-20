@@ -28,3 +28,4 @@ out
 docker-compose.yml
 src/test
 .env
+src/main/java/YHWLTH/sharing/init

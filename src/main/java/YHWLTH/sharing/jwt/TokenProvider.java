@@ -1,6 +1,7 @@
 package YHWLTH.sharing.jwt;
 
 import YHWLTH.sharing.context.UserContext;
+import YHWLTH.sharing.service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -12,13 +13,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -26,37 +30,33 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TokenProvider {
 
-    private static final String STUDENT_ID = "studentId";
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String AUTHORITIES_KEY = "auth";
     private final long tokenValidityInMilliseconds;
     private final StringRedisTemplate redisTemplate;
     private final Key key;
+    private final UserService userService;
 
     @Autowired
-    public TokenProvider(@Value("${jwt.key}") String secret, @Value("${jwt.time}") long tokenValidityInSeconds, StringRedisTemplate redisTemplate) {
+    public TokenProvider(@Value("${jwt.key}") String secret, @Value("${jwt.time}") long tokenValidityInSeconds, StringRedisTemplate redisTemplate, UserService userService) {
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
         this.redisTemplate = redisTemplate;
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.userService = userService;
     }
 
     public String createToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
         long now = new Date().getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
-                .claim(STUDENT_ID, ((UserContext) authentication.getPrincipal()).getUser().getStudentId())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
     }
 
+    @Transactional
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -64,13 +64,9 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        ArrayList<SimpleGrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toCollection(ArrayList::new));
+        UserDetails userContext = userService.loadUserByUsername(claims.getSubject());
 
-        UserContext userContext = new UserContext(new YHWLTH.sharing.entity.User(claims.getSubject(),
-                (String) claims.get(STUDENT_ID), token), authorities);
-        return new UsernamePasswordAuthenticationToken(userContext, token, authorities);
+        return new UsernamePasswordAuthenticationToken(userContext, token, userContext.getAuthorities());
     }
 
     public boolean validateToken(String token) {

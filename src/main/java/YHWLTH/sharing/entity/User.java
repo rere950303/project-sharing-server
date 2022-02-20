@@ -35,6 +35,8 @@ public class User extends BaseEntity {
 
     private Boolean isPermit;
 
+    private Long point = 0L;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<ShareItem> shareItemList = new ArrayList<>();
 
@@ -56,5 +58,9 @@ public class User extends BaseEntity {
 
     public void addRoles(UserRole userRole) {
         this.roles.add(userRole);
+    }
+
+    public void addPoint(Long point) {
+        this.point = this.point + point;
     }
 }
