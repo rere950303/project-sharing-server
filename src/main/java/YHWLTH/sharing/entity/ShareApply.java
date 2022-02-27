@@ -31,13 +31,13 @@ public class ShareApply {
     @JoinColumn(name = "shareItem_id")
     private ShareItem shareItem;
 
-    private LocalDate starTime;
-    private LocalDate endTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     public ShareApply(User user, ShareItem shareItem, ShareApplyDTO shareApplyDTO) {
         this.user = user;
         this.shareItem = shareItem;
-        this.starTime = shareApplyDTO.getStartDate();
-        this.endTime = shareApplyDTO.getEndDate();
+        this.startDate = shareApplyDTO.getStartDate();
+        this.endDate = shareApplyDTO.getEndDate();
     }
 }

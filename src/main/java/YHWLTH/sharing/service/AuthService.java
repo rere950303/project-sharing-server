@@ -78,7 +78,7 @@ public class AuthService {
         user.addRoles(userRole);
         userRoleRepo.save(userRole);
 
-        return user.getUserId();
+        return user.getId();
     }
 
     public ResponseEntity<TokenDTO> login(LoginDTO loginDTO) {
@@ -96,7 +96,7 @@ public class AuthService {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        TokenDTO tokenDTO = new TokenDTO(((UserContext) authentication.getPrincipal()).getUser().getUserId(),
+        TokenDTO tokenDTO = new TokenDTO(((UserContext) authentication.getPrincipal()).getUser().getId(),
                 loginDTO.getUsername(), jwt);
         ApiUtil.makeSuccessResult(tokenDTO, ApiUtil.SUCCESS_OK);
 

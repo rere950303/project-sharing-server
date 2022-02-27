@@ -24,7 +24,7 @@ public class User extends BaseEntity {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_SEQ_GENERATOR")
-    private Long userId;
+    private Long id;
 
     @Column(unique = true)
     private String username;
@@ -42,6 +42,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserRole> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Review> reviewList = new ArrayList<>();
 
     public User(SignUpDTO signUpDTO, PasswordEncoder passwordEncoder) {
         this.studentId = signUpDTO.getStudentId();
@@ -62,5 +65,9 @@ public class User extends BaseEntity {
 
     public void addPoint(Long point) {
         this.point = this.point + point;
+    }
+
+    public void minusPoint(Long point) {
+        this.point = this.point - point;
     }
 }

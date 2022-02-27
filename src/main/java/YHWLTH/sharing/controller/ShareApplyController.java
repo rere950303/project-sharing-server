@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -53,12 +52,24 @@ public class ShareApplyController {
     @DeleteMapping("/{shareApplyId}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "아아템 공유신청 삭제 성공", content = @Content(schema = @Schema(implementation = CommonResult.class))),
-            @ApiResponse(responseCode = "403", description = "아이템 공유신청 삭제 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
+            @ApiResponse(responseCode = "403", description = "아이템 공유신청 삭제 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "아이템 공유신청 삭제", description = "아이템 공유신청 삭제 진행하는 메소드")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CommonResult> delete(@PathVariable Long shareApplyId, @ApiIgnore @CurrentUser User user) {
         return shareApplyService.delete(shareApplyId, user);
+    }
+
+    @DeleteMapping("/{sharingItemId}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "아아템 공유 완료 성공", content = @Content(schema = @Schema(implementation = CommonResult.class))),
+            @ApiResponse(responseCode = "400", description = "아아템 공유 완료 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
+            @ApiResponse(responseCode = "403", description = "아이템 공유 완료 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
+    })
+    @Operation(summary = "아이템 공유 완료", description = "아이템 공유 완료를 진행하는 메소드")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<CommonResult> complete(@PathVariable Long sharingItemId, @ApiIgnore @CurrentUser User user) {
+        return shareApplyService.complete(sharingItemId, user);
     }
 
 }

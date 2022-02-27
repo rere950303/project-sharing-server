@@ -40,7 +40,7 @@ public class ShareItemReadDTO extends CommonResult {
     private List<String> images = new ArrayList<>();
 
     public ShareItemReadDTO(ShareItem shareItem, User user) {
-        this.userId = user.getUserId();
+        this.userId = user.getId();
         this.rentalFee = shareItem.getRentalFee();
         this.itemType = shareItem.getItemType();
         this.kakaoId = shareItem.getKakaoId();

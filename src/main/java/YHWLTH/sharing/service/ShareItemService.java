@@ -101,7 +101,7 @@ public class ShareItemService {
             throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
         }
 
-        if (!shareItem.getUser().getUserId().equals(user.getUserId())) {
+        if (!shareItem.getUser().getId().equals(user.getId())) {
             throw new AccessDeniedException("업데이트 권한이 없습니다.");
         }
 
@@ -131,7 +131,7 @@ public class ShareItemService {
             throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
         }
 
-        if (!shareItem.getUser().getUserId().equals(user.getUserId())) {
+        if (!shareItem.getUser().getId().equals(user.getId())) {
             throw new AccessDeniedException("삭제 권한이 없습니다.");
         }
 

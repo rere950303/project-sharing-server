@@ -29,13 +29,15 @@ public class SharingItem {
     @JoinColumn(name = "shareItem_id")
     private ShareItem shareItem;
 
-    private LocalDate starTime;
-    private LocalDate endTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Long deposit;
 
     public SharingItem(ShareApply shareApply, User user, ShareItem shareItem) {
         this.user = user;
         this.shareItem = shareItem;
-        this.starTime = LocalDate.now();
-        this.endTime = shareApply.getEndTime();
+        this.startDate = LocalDate.now();
+        this.endDate = shareApply.getEndDate();
+        this.deposit = shareItem.getDeposit();
     }
 }
