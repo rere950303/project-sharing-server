@@ -1,8 +1,11 @@
 package YHWLTH.sharing.service;
 
 import YHWLTH.sharing.dto.common.CommonResult;
+import YHWLTH.sharing.dto.request.PageRequestDTO;
 import YHWLTH.sharing.dto.request.ShareItemRegisterDTO;
 import YHWLTH.sharing.dto.request.ShareItemUpdateDTO;
+import YHWLTH.sharing.dto.response.PageResultDTO;
+import YHWLTH.sharing.dto.response.ShareItemListDTO;
 import YHWLTH.sharing.dto.response.ShareItemReadDTO;
 import YHWLTH.sharing.entity.Image;
 import YHWLTH.sharing.entity.ShareItem;
@@ -15,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -43,12 +47,7 @@ public class ShareItemService {
     private String path;
 
     public ResponseEntity<CommonResult> register(ShareItemRegisterDTO registerDTO) throws IOException {
-        User user = userRepo.findById(registerDTO.getUserId()).orElse(null);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("해당되는 사용자가 없습니다.");
-        }
-
+        User user = userRepo.findById(registerDTO.getUserId()).orElseThrow(() -> new UsernameNotFoundException("해당되는 사용자가 없습니다."));
         List<Image> images = storeImages(registerDTO.getImages());
         ShareItem shareItem = new ShareItem(registerDTO, images, user);
 
@@ -95,11 +94,7 @@ public class ShareItemService {
 
     @Transactional
     public ResponseEntity<CommonResult> update(ShareItemUpdateDTO updateDTO, User user) throws IOException {
-        ShareItem shareItem = shareItemRepo.findById(updateDTO.getShareItemId()).orElse(null);
-
-        if (shareItem == null) {
-            throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
-        }
+        ShareItem shareItem = shareItemRepo.findById(updateDTO.getShareItemId()).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 아이템이 없습니다."));
 
         if (!shareItem.getUser().getId().equals(user.getId())) {
             throw new AccessDeniedException("업데이트 권한이 없습니다.");
@@ -125,11 +120,7 @@ public class ShareItemService {
 
     @Transactional
     public ResponseEntity<CommonResult> remove(Long shareItemId, User user) {
-        ShareItem shareItem = shareItemRepo.findById(shareItemId).orElse(null);
-
-        if (shareItem == null) {
-            throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
-        }
+        ShareItem shareItem = shareItemRepo.findById(shareItemId).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 아이템이 없습니다."));
 
         if (!shareItem.getUser().getId().equals(user.getId())) {
             throw new AccessDeniedException("삭제 권한이 없습니다.");
@@ -141,11 +132,7 @@ public class ShareItemService {
     }
 
     public ResponseEntity<ShareItemReadDTO> read(Long shareItemId) {
-        ShareItem shareItem = shareItemRepo.findById(shareItemId).orElse(null);
-
-        if (shareItem == null) {
-            throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
-        }
+        ShareItem shareItem = shareItemRepo.findById(shareItemId).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 아이템이 없습니다."));
 
         User user = shareItem.getUser();
         ShareItemReadDTO shareItemReadDTO = new ShareItemReadDTO(shareItem, user);
@@ -164,5 +151,12 @@ public class ShareItemService {
             log.info("[ShareItemService][getImage]MalformedURLException");
             throw new MalformedURLException("잘못된 URL 형식입니다. 다시 시도해주세요.");
         }
+    }
+
+    public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemList(PageRequestDTO pageRequestDTO) {
+        Page<ShareItemListDTO> page = shareItemRepo.shareItemList(pageRequestDTO);
+        PageResultDTO<ShareItemListDTO> result = new PageResultDTO<>(page);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

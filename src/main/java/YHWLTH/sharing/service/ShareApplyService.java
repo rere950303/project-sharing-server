@@ -36,12 +36,10 @@ public class ShareApplyService {
             throw new IllegalArgumentException("endDate가 startDate보다 이전일 수 없습니다.");
         }
 
-        ShareItem shareItem = shareItemRepo.findById(shareApplyDTO.getShareItemId()).orElse(null);
-        if (shareItem == null) {
-            throw new IllegalArgumentException("해당되는 id의 아이템이 없습니다.");
-        }
-
+        ShareItem shareItem = shareItemRepo.findById(shareApplyDTO.getShareItemId()).orElseThrow(() ->
+                new IllegalArgumentException("해당되는 id의 아이템이 없습니다."));
         SharingItem sharingItem = sharingItemRepo.findByShareItemId(shareItem.getId()).orElse(null);
+
         if (sharingItem != null && (sharingItem.getEndDate().isEqual(shareApplyDTO.getStartDate()) ||
                 sharingItem.getEndDate().isAfter(shareApplyDTO.getStartDate()))) {
             throw new IllegalStateException(String.format("해당기간에 이미 공유중인 아이템입니다. %04d-%02d-%02d 이후로 신청해주세요.",
@@ -71,11 +69,7 @@ public class ShareApplyService {
 
     @Transactional
     public ResponseEntity<CommonResult> accept(Long shareApplyId) {
-        ShareApply shareApply = shareApplyRepo.findById(shareApplyId).orElse(null);
-
-        if (shareApply == null) {
-            throw new IllegalArgumentException("해당되는 id의 공유신청이 없습니다.");
-        }
+        ShareApply shareApply = shareApplyRepo.findById(shareApplyId).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 공유신청이 없습니다."));
 
         if (shareApply.getEndDate().isBefore(LocalDate.now())) {
             shareApplyRepo.delete(shareApply);
@@ -107,10 +101,7 @@ public class ShareApplyService {
 
     @Transactional
     public ResponseEntity<CommonResult> delete(Long shareApplyId, User user) {
-        ShareApply shareApply = shareApplyRepo.findById(shareApplyId).orElse(null);
-        if (shareApply == null) {
-            throw new IllegalArgumentException("해당되는 id의 공유신청이 없습니다.");
-        }
+        ShareApply shareApply = shareApplyRepo.findById(shareApplyId).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 공유신청이 없습니다."));
 
         User owner = shareApply.getUser();
         if (!owner.getId().equals(user.getId())) {
@@ -124,11 +115,7 @@ public class ShareApplyService {
 
     @Transactional
     public ResponseEntity<CommonResult> complete(Long sharingItemId, User user) {
-        SharingItem sharingItem = sharingItemRepo.findById(sharingItemId).orElse(null);
-
-        if (sharingItem == null) {
-            throw new IllegalArgumentException("해당되는 id의 공유중인 아이템이 없습니다.");
-        }
+        SharingItem sharingItem = sharingItemRepo.findById(sharingItemId).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 공유중인 아이템이 없습니다."));
 
         ShareItem shareItem = sharingItem.getShareItem();
         if (!shareItem.getUser().getId().equals(user.getId())) {

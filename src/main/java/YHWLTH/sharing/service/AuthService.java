@@ -3,6 +3,7 @@ package YHWLTH.sharing.service;
 import YHWLTH.sharing.context.UserContext;
 import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.request.LoginDTO;
+import YHWLTH.sharing.dto.request.PasswordChangeDTO;
 import YHWLTH.sharing.dto.request.SignUpDTO;
 import YHWLTH.sharing.dto.response.SignUpResponseDTO;
 import YHWLTH.sharing.dto.response.TokenDTO;
@@ -58,11 +59,7 @@ public class AuthService {
             throw new SignUpEx("비밀번호가 일치하지 않습니다.", signUpDTO);
         }
 
-        Role role = roleRepo.findByRole("USER").orElse(null);
-
-        if (role == null) {
-            throw new SignUpEx("존재하지 않는 권한입니다.");
-        }
+        Role role = roleRepo.findByRole("USER").orElseThrow(() -> new SignUpEx("존재하지 않는 권한입니다."));
 
         Long userId = createUser(signUpDTO, role);
 
@@ -127,5 +124,16 @@ public class AuthService {
         userRepo.deleteById(Long.valueOf(userId));
 
         return logout(request);
+    }
+
+    @Transactional
+    public ResponseEntity<CommonResult> changePassword(PasswordChangeDTO passwordChangeDTO, User user) {
+        if (!passwordChangeDTO.getNewPassword().equals(passwordChangeDTO.getNewPasswordConfirm())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        user.changePassword(passwordChangeDTO.getNewPassword(), passwordEncoder);
+
+        return new ResponseEntity<>(ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK), HttpStatus.OK);
     }
 }

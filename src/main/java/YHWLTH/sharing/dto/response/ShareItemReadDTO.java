@@ -36,12 +36,16 @@ public class ShareItemReadDTO extends CommonResult {
     @Schema(description = "rentalFee", example = "1000")
     private Long rentalFee;
 
+    @Schema(description = "deposit", example = "1000")
+    private Long deposit;
+
     @Schema(description = "이미지 파일 이름", example = "xxxxxx.jpg, xxxxxx.jpg")
     private List<String> images = new ArrayList<>();
 
     public ShareItemReadDTO(ShareItem shareItem, User user) {
         this.userId = user.getId();
         this.rentalFee = shareItem.getRentalFee();
+        this.deposit = shareItem.getDeposit();
         this.itemType = shareItem.getItemType();
         this.kakaoId = shareItem.getKakaoId();
         this.desc = shareItem.getDesc();

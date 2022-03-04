@@ -3,6 +3,7 @@ package YHWLTH.sharing.controller;
 import YHWLTH.sharing.annotation.secuirty.CurrentUser;
 import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.request.LoginDTO;
+import YHWLTH.sharing.dto.request.PasswordChangeDTO;
 import YHWLTH.sharing.dto.request.SignUpDTO;
 import YHWLTH.sharing.dto.response.SignUpResponseDTO;
 import YHWLTH.sharing.dto.response.TokenDTO;
@@ -63,6 +64,18 @@ public class AuthController {
     public ResponseEntity<CommonResult> logout(HttpServletRequest request) {
 
         return authService.logout(request);
+    }
+
+    @PutMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공", content = @Content(schema = @Schema(implementation = CommonResult.class))),
+            @ApiResponse(responseCode = "400", description = "비밀번호 변경 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
+    })
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경을 진행하는 메소드")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<CommonResult> changePassword(@Valid @RequestBody PasswordChangeDTO passwordChangeDTO, @ApiIgnore @CurrentUser User user) {
+
+        return authService.changePassword(passwordChangeDTO, user);
     }
 
     @DeleteMapping("/{userId}")

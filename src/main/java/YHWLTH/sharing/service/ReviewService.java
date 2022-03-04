@@ -24,11 +24,7 @@ public class ReviewService {
     private final UserRepo userRepo;
 
     public ResponseEntity<CommonResult> register(ReviewRegisterDTO registerDTO, User user) {
-        User target = userRepo.findById(registerDTO.getUserId()).orElse(null);
-        if (target == null) {
-            throw new UsernameNotFoundException("해당되는 사용자가 없습니다.");
-        }
-
+        User target = userRepo.findById(registerDTO.getUserId()).orElseThrow(() -> new UsernameNotFoundException("해당되는 사용자가 없습니다."));
         Review review = new Review(registerDTO, target, user);
         reviewRepo.save(review);
 
@@ -37,10 +33,7 @@ public class ReviewService {
 
     @Transactional
     public ResponseEntity<CommonResult> update(ReviewUpdateDTO updateDTO, User user) {
-        Review review = reviewRepo.findById(updateDTO.getReviewId()).orElse(null);
-        if (review == null) {
-            throw new IllegalArgumentException("해당되는 id의 리뷰가 없습니다.");
-        }
+        Review review = reviewRepo.findById(updateDTO.getReviewId()).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 리뷰가 없습니다."));
         if (!review.getWriterId().equals(user.getId())) {
             throw new AccessDeniedException("리뷰 업데이트 권한이 없습니다.");
         }
@@ -52,10 +45,7 @@ public class ReviewService {
 
     @Transactional
     public ResponseEntity<CommonResult> delete(Long reviewId, User user) {
-        Review review = reviewRepo.findById(reviewId).orElse(null);
-        if (review == null) {
-            throw new IllegalArgumentException("해당되는 id의 리뷰가 없습니다.");
-        }
+        Review review = reviewRepo.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 리뷰가 없습니다."));
         if (!review.getWriterId().equals(user.getId())) {
             throw new AccessDeniedException("리뷰 삭제 권한이 없습니다.");
         }

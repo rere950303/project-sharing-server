@@ -1,6 +1,9 @@
 package YHWLTH.sharing.controller;
 
 import YHWLTH.sharing.dto.common.CommonResult;
+import YHWLTH.sharing.dto.request.PageRequestDTO;
+import YHWLTH.sharing.dto.response.PageResultDTO;
+import YHWLTH.sharing.dto.response.ShareItemListDTO;
 import YHWLTH.sharing.dto.response.ShareItemReadDTO;
 import YHWLTH.sharing.service.ShareItemService;
 import io.swagger.annotations.Api;
@@ -51,4 +54,14 @@ public class BoardController {
         return shareItemService.getImage(imageName);
     }
 
+    @GetMapping("/list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시판 불러오기 성공"),
+            @ApiResponse(responseCode = "400", description = "게시판 불러오기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
+    })
+    @Operation(summary = "게시판 불러오기", description = "게시판을 불러오는 메소드")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemList(@RequestBody PageRequestDTO pageRequestDTO) {
+        return shareItemService.shareItemList(pageRequestDTO);
+    }
 }

@@ -70,4 +70,8 @@ public class User extends BaseEntity {
     public void minusPoint(Long point) {
         this.point = this.point - point;
     }
+
+    public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(newPassword);
+    }
 }

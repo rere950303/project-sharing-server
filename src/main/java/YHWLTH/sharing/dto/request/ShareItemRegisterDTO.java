@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
@@ -30,7 +31,8 @@ public class ShareItemRegisterDTO {
     private String desc;
 
     @NotNull(message = "대여비를 입력해주세요.")
-    @ApiParam(value = "대여비", required = true)
+    @Range(max = 10000, message = "[0, 10000] 범위로 입력해주세요.")
+    @ApiParam(value = "rentalFee", required = true)
     private Long rentalFee;
 
     @ApiParam(value = "사진파일")
@@ -41,6 +43,7 @@ public class ShareItemRegisterDTO {
     private String kakaoId;
 
     @NotNull(message = "보증금을 입력해주세요.")
+    @Range(max = 10000, message = "[0, 10000] 범위로 입력해주세요.")
     @ApiParam(value = "보증금", required = true)
     private Long deposit;
 }
