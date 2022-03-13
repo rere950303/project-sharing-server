@@ -1,10 +1,12 @@
 package YHWLTH.sharing.controller;
 
+import YHWLTH.sharing.annotation.secuirty.CurrentUser;
 import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.request.PageRequestDTO;
 import YHWLTH.sharing.dto.response.PageResultDTO;
 import YHWLTH.sharing.dto.response.ShareItemListDTO;
 import YHWLTH.sharing.dto.response.ShareItemReadDTO;
+import YHWLTH.sharing.entity.User;
 import YHWLTH.sharing.service.ShareItemService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,8 +19,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotBlank;
 import java.net.MalformedURLException;
@@ -54,14 +58,28 @@ public class BoardController {
         return shareItemService.getImage(imageName);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/shareItemList")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시판 불러오기 성공"),
-            @ApiResponse(responseCode = "400", description = "게시판 불러오기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
+            @ApiResponse(responseCode = "400", description = "게시판 불러오기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
     })
     @Operation(summary = "게시판 불러오기", description = "게시판을 불러오는 메소드")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemList(@RequestBody PageRequestDTO pageRequestDTO) {
+    public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemList(@ModelAttribute PageRequestDTO pageRequestDTO) {
+        return shareItemService.shareItemList(pageRequestDTO);
+    }
+
+    @GetMapping("/userShareItemList")
+    @PreAuthorize(value = "#user.id == #pageRequestDTO.userId")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "개인 게시판 불러오기 성공"),
+            @ApiResponse(responseCode = "400", description = "개인 게시판 불러오기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
+            @ApiResponse(responseCode = "403", description = "개인 게시판 불러오기 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
+    })
+    @Operation(summary = "개인 게시판 불러오기", description = "개인 게시판을 불러오는 메소드")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemListForUser(
+            @ModelAttribute PageRequestDTO pageRequestDTO, @CurrentUser @ApiIgnore User user) {
         return shareItemService.shareItemList(pageRequestDTO);
     }
 }

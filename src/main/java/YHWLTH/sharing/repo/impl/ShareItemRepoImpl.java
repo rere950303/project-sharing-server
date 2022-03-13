@@ -36,6 +36,7 @@ public class ShareItemRepoImpl implements ShareItemCustomRepo {
                 ))
                 .from(shareItem)
                 .where(
+                        userIdEq(pageRequestDTO.getUserId()),
                         itemTypeEq(pageRequestDTO.getItemType()),
                         isShareEq(pageRequestDTO.getIsShared()),
                         depositLoe(pageRequestDTO.getDeposit()),
@@ -63,6 +64,10 @@ public class ShareItemRepoImpl implements ShareItemCustomRepo {
                 );
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+    }
+
+    private BooleanExpression userIdEq(Long userId) {
+        return userId == null ? null : shareItem.user.id.eq(userId);
     }
 
     private BooleanExpression itemTypeEq(ItemType itemType) {

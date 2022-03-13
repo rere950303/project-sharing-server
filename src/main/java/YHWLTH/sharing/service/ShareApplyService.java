@@ -114,8 +114,8 @@ public class ShareApplyService {
     }
 
     @Transactional
-    public ResponseEntity<CommonResult> complete(Long sharingItemId, User user) {
-        SharingItem sharingItem = sharingItemRepo.findById(sharingItemId).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 공유중인 아이템이 없습니다."));
+    public ResponseEntity<CommonResult> complete(Long shareItemId, User user) {
+        SharingItem sharingItem = sharingItemRepo.findByShareItemId(shareItemId).orElseThrow(() -> new IllegalArgumentException("해당되는 id의 공유중인 아이템이 없습니다."));
 
         ShareItem shareItem = sharingItem.getShareItem();
         if (!shareItem.getUser().getId().equals(user.getId())) {
@@ -125,7 +125,7 @@ public class ShareApplyService {
         shareItem.changeIsShared();
         sharingItem.getUser().addPoint(sharingItem.getDeposit());
 
-        sharingItemRepo.deleteById(sharingItemId);
+        sharingItemRepo.deleteById(shareItemId);
 
         return new ResponseEntity<>(ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK), HttpStatus.OK);
     }

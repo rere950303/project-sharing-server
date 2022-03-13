@@ -2,6 +2,7 @@ package YHWLTH.sharing.controller;
 
 import YHWLTH.sharing.annotation.secuirty.CurrentUser;
 import YHWLTH.sharing.dto.common.CommonResult;
+import YHWLTH.sharing.dto.response.PointDTO;
 import YHWLTH.sharing.entity.User;
 import YHWLTH.sharing.service.PointService;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -37,6 +39,17 @@ public class PointController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CommonResult> addPoint(@NotNull @RequestParam Long point, @ApiIgnore @CurrentUser User user) {
         return pointService.addPoint(point, user);
+    }
+
+    @GetMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "포인트 조회 성공", content = @Content(schema = @Schema(implementation = PointDTO.class))),
+            @ApiResponse(responseCode = "400", description = "포인트 조회 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
+    })
+    @Operation(summary = "포인트 조회", description = "포인트 조회를 진행하는 메소드")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<PointDTO> getPoint(@ApiIgnore @CurrentUser User user) {
+        return pointService.getPoint(user);
     }
 
 }

@@ -26,7 +26,4 @@ public class ReviewRegisterDTO {
     @NotNull(message = "reviewType를 입력해주세요.")
     @Schema(description = "reviewType", example = "LENDER", required = true, allowableValues = {"LENDER", "BORROWER"})
     private ReviewType reviewType;
-
-    @Schema(description = "리뷰 내용", example = "물건 상태가 양호합니다. 만족합니다.")
-    private String content;
 }

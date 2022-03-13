@@ -1,6 +1,7 @@
 package YHWLTH.sharing.service;
 
 import YHWLTH.sharing.dto.common.CommonResult;
+import YHWLTH.sharing.dto.response.PointDTO;
 import YHWLTH.sharing.entity.User;
 import YHWLTH.sharing.util.ApiUtil;
 import org.springframework.http.HttpStatus;
@@ -16,5 +17,12 @@ public class PointService {
         user.addPoint(point);
 
         return new ResponseEntity<>(ApiUtil.getSuccessResult(ApiUtil.SUCCESS_CREATED), HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<PointDTO> getPoint(User user) {
+        PointDTO pointDTO = new PointDTO(user.getPoint());
+        ApiUtil.makeSuccessResult(pointDTO, ApiUtil.SUCCESS_OK);
+
+        return new ResponseEntity<>(pointDTO, HttpStatus.OK);
     }
 }

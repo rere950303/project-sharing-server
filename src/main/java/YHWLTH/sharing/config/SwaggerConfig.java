@@ -7,6 +7,7 @@ import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Pageable;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -26,6 +27,7 @@ public class SwaggerConfig {
                         typeResolver.resolve(PageResultDTO.class),
                         typeResolver.resolve(ShareItemListDTO.class)
                 )
+                .ignoredParameterTypes(Pageable.class)
                 .apiInfo(swaggerInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("YHWLTH.sharing.controller"))

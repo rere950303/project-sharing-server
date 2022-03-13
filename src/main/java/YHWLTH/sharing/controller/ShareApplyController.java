@@ -7,6 +7,7 @@ import YHWLTH.sharing.entity.User;
 import YHWLTH.sharing.service.ShareApplyService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -60,7 +61,7 @@ public class ShareApplyController {
         return shareApplyService.delete(shareApplyId, user);
     }
 
-    @DeleteMapping("/{sharingItemId}")
+    @DeleteMapping("/{shareItemId}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "아아템 공유 완료 성공", content = @Content(schema = @Schema(implementation = CommonResult.class))),
             @ApiResponse(responseCode = "400", description = "아아템 공유 완료 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
@@ -68,8 +69,8 @@ public class ShareApplyController {
     })
     @Operation(summary = "아이템 공유 완료", description = "아이템 공유 완료를 진행하는 메소드")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CommonResult> complete(@PathVariable Long sharingItemId, @ApiIgnore @CurrentUser User user) {
-        return shareApplyService.complete(sharingItemId, user);
+    public ResponseEntity<CommonResult> complete(@PathVariable Long shareItemId, @ApiIgnore @CurrentUser User user) {
+        return shareApplyService.complete(shareItemId, user);
     }
 
 }

@@ -1,5 +1,6 @@
 package YHWLTH.sharing.entity;
 
+import YHWLTH.sharing.dto.request.ReviewRegisterDTO;
 import YHWLTH.sharing.dto.request.SignUpDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,14 +38,19 @@ public class User extends BaseEntity {
 
     private Long point = 0L;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Long lenderScore = 0L;
+
+    private Integer lenderReviewNum = 0;
+
+    private Long borrowerScore = 0L;
+
+    private Integer borrowerReviewNum = 0;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ShareItem> shareItemList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<UserRole> roles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Review> reviewList = new ArrayList<>();
 
     public User(SignUpDTO signUpDTO, PasswordEncoder passwordEncoder) {
         this.studentId = signUpDTO.getStudentId();
@@ -73,5 +79,15 @@ public class User extends BaseEntity {
 
     public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(newPassword);
+    }
+
+    public void registerReview(ReviewRegisterDTO registerDTO) {
+        if (registerDTO.getReviewType().equals(ReviewType.LENDER)) {
+            lenderReviewNum++;
+            lenderScore += registerDTO.getScore();
+        } else {
+            borrowerReviewNum++;
+            borrowerScore += registerDTO.getScore();
+        }
     }
 }

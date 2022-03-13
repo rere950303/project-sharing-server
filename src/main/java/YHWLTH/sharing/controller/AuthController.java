@@ -79,7 +79,7 @@ public class AuthController {
     }
 
     @DeleteMapping("/{userId}")
-    @PreAuthorize(value = "#user.userId == #userId")
+    @PreAuthorize(value = "#user.id == #userId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "탈퇴 성공", content = @Content(schema = @Schema(implementation = CommonResult.class))),
             @ApiResponse(responseCode = "403", description = "탈퇴 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
