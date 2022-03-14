@@ -1,7 +1,11 @@
 package YHWLTH.sharing.service;
 
 import YHWLTH.sharing.dto.common.CommonResult;
+import YHWLTH.sharing.dto.request.PageRequestDTO;
 import YHWLTH.sharing.dto.request.ShareApplyDTO;
+import YHWLTH.sharing.dto.response.PageResultDTO;
+import YHWLTH.sharing.dto.response.ShareApplyListDTO;
+import YHWLTH.sharing.dto.response.SharingItemListDTO;
 import YHWLTH.sharing.entity.ShareApply;
 import YHWLTH.sharing.entity.ShareItem;
 import YHWLTH.sharing.entity.SharingItem;
@@ -12,6 +16,7 @@ import YHWLTH.sharing.repo.ShareItemRepo;
 import YHWLTH.sharing.repo.SharingItemRepo;
 import YHWLTH.sharing.util.ApiUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -128,5 +133,13 @@ public class ShareApplyService {
         sharingItemRepo.deleteById(shareItemId);
 
         return new ResponseEntity<>(ApiUtil.getSuccessResult(ApiUtil.SUCCESS_OK), HttpStatus.OK);
+    }
+
+    public ResponseEntity<PageResultDTO<ShareApplyListDTO>> shareApplyList(PageRequestDTO pageRequestDTO, Long userId) {
+        Page<ShareApplyListDTO> page = shareApplyRepo.shareApplyList(pageRequestDTO, userId);
+        PageResultDTO<ShareApplyListDTO> result = new PageResultDTO<>(page);
+        ApiUtil.makeSuccessResult(result, ApiUtil.SUCCESS_OK);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

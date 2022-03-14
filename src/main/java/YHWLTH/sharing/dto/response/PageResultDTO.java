@@ -1,5 +1,6 @@
 package YHWLTH.sharing.dto.response;
 
+import YHWLTH.sharing.dto.common.CommonResult;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.util.stream.IntStream;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PageResultDTO<DTO> {
+public class PageResultDTO<DTO> extends CommonResult {
 
     @Schema(description = "데이터")
     private List<DTO> dtoList;

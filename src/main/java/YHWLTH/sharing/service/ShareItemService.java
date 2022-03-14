@@ -156,6 +156,7 @@ public class ShareItemService {
     public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemList(PageRequestDTO pageRequestDTO, Long userId) {
         Page<ShareItemListDTO> page = shareItemRepo.shareItemList(pageRequestDTO, userId);
         PageResultDTO<ShareItemListDTO> result = new PageResultDTO<>(page);
+        ApiUtil.makeSuccessResult(result, ApiUtil.SUCCESS_OK);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

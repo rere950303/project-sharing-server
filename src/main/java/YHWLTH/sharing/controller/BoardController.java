@@ -3,11 +3,9 @@ package YHWLTH.sharing.controller;
 import YHWLTH.sharing.annotation.secuirty.CurrentUser;
 import YHWLTH.sharing.dto.common.CommonResult;
 import YHWLTH.sharing.dto.request.PageRequestDTO;
-import YHWLTH.sharing.dto.response.PageResultDTO;
-import YHWLTH.sharing.dto.response.ShareItemListDTO;
-import YHWLTH.sharing.dto.response.ShareItemReadDTO;
-import YHWLTH.sharing.dto.response.SharingItemListDTO;
+import YHWLTH.sharing.dto.response.*;
 import YHWLTH.sharing.entity.User;
+import YHWLTH.sharing.service.ShareApplyService;
 import YHWLTH.sharing.service.ShareItemService;
 import YHWLTH.sharing.service.SharingItemService;
 import io.swagger.annotations.Api;
@@ -38,6 +36,7 @@ public class BoardController {
 
     private final ShareItemService shareItemService;
     private final SharingItemService sharingItemService;
+    private final ShareApplyService shareApplyService;
 
     @GetMapping("/{shareItemId}")
     @ApiResponses(value = {
@@ -95,8 +94,22 @@ public class BoardController {
     })
     @Operation(summary = "빌리고 있는 물품 불러오기", description = "빌리고 있는 물품을 불러오는 메소드")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PageResultDTO<SharingItemListDTO>> sharingItemListForUser(
+    public ResponseEntity<PageResultDTO<SharingItemListDTO>> sharingItemList(
             @ModelAttribute PageRequestDTO pageRequestDTO, @CurrentUser @ApiIgnore User user, @PathVariable Long userId) {
         return sharingItemService.sharingItemList(pageRequestDTO, userId);
+    }
+
+    @GetMapping("/shareApplyList/{userId}")
+    @PreAuthorize(value = "#user.id == #userId")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "공유 신청 게시판 불러오기 성공"),
+            @ApiResponse(responseCode = "400", description = "공유 신청 게시판 불러오기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
+            @ApiResponse(responseCode = "403", description = "공유 신청 게시판 불러오기 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
+    })
+    @Operation(summary = "공유 신청 게시판 불러오기", description = "공유 신청 게시판을 불러오는 메소드")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<PageResultDTO<ShareApplyListDTO>> shareApplyList(
+            @ModelAttribute PageRequestDTO pageRequestDTO, @CurrentUser @ApiIgnore User user, @PathVariable Long userId) {
+        return shareApplyService.shareApplyList(pageRequestDTO, userId);
     }
 }
