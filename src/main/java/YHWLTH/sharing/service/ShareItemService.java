@@ -153,8 +153,8 @@ public class ShareItemService {
         }
     }
 
-    public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemList(PageRequestDTO pageRequestDTO) {
-        Page<ShareItemListDTO> page = shareItemRepo.shareItemList(pageRequestDTO);
+    public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemList(PageRequestDTO pageRequestDTO, Long userId) {
+        Page<ShareItemListDTO> page = shareItemRepo.shareItemList(pageRequestDTO, userId);
         PageResultDTO<ShareItemListDTO> result = new PageResultDTO<>(page);
 
         return new ResponseEntity<>(result, HttpStatus.OK);

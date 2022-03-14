@@ -6,8 +6,10 @@ import YHWLTH.sharing.dto.request.PageRequestDTO;
 import YHWLTH.sharing.dto.response.PageResultDTO;
 import YHWLTH.sharing.dto.response.ShareItemListDTO;
 import YHWLTH.sharing.dto.response.ShareItemReadDTO;
+import YHWLTH.sharing.dto.response.SharingItemListDTO;
 import YHWLTH.sharing.entity.User;
 import YHWLTH.sharing.service.ShareItemService;
+import YHWLTH.sharing.service.SharingItemService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,6 +37,7 @@ import java.net.MalformedURLException;
 public class BoardController {
 
     private final ShareItemService shareItemService;
+    private final SharingItemService sharingItemService;
 
     @GetMapping("/{shareItemId}")
     @ApiResponses(value = {
@@ -66,11 +69,11 @@ public class BoardController {
     @Operation(summary = "게시판 불러오기", description = "게시판을 불러오는 메소드")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemList(@ModelAttribute PageRequestDTO pageRequestDTO) {
-        return shareItemService.shareItemList(pageRequestDTO);
+        return shareItemService.shareItemList(pageRequestDTO, null);
     }
 
-    @GetMapping("/userShareItemList")
-    @PreAuthorize(value = "#user.id == #pageRequestDTO.userId")
+    @GetMapping("/shareItemList/{userId}")
+    @PreAuthorize(value = "#user.id == #userId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "개인 게시판 불러오기 성공"),
             @ApiResponse(responseCode = "400", description = "개인 게시판 불러오기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
@@ -79,7 +82,21 @@ public class BoardController {
     @Operation(summary = "개인 게시판 불러오기", description = "개인 게시판을 불러오는 메소드")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemListForUser(
-            @ModelAttribute PageRequestDTO pageRequestDTO, @CurrentUser @ApiIgnore User user) {
-        return shareItemService.shareItemList(pageRequestDTO);
+            @ModelAttribute PageRequestDTO pageRequestDTO, @CurrentUser @ApiIgnore User user, @PathVariable Long userId) {
+        return shareItemService.shareItemList(pageRequestDTO, userId);
+    }
+
+    @GetMapping("/sharingItemList/{userId}")
+    @PreAuthorize(value = "#user.id == #userId")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "빌리고 있는 물품 불러오기 성공"),
+            @ApiResponse(responseCode = "400", description = "빌리고 있는 물품 불러오기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
+            @ApiResponse(responseCode = "403", description = "빌리고 있는 물품 불러오기 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
+    })
+    @Operation(summary = "빌리고 있는 물품 불러오기", description = "빌리고 있는 물품을 불러오는 메소드")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<PageResultDTO<SharingItemListDTO>> sharingItemListForUser(
+            @ModelAttribute PageRequestDTO pageRequestDTO, @CurrentUser @ApiIgnore User user, @PathVariable Long userId) {
+        return sharingItemService.sharingItemList(pageRequestDTO, userId);
     }
 }

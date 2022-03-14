@@ -1,10 +1,10 @@
 package YHWLTH.sharing.repo.impl;
 
 import YHWLTH.sharing.dto.request.PageRequestDTO;
-import YHWLTH.sharing.dto.response.QShareItemListDTO;
-import YHWLTH.sharing.dto.response.ShareItemListDTO;
+import YHWLTH.sharing.dto.response.QSharingItemListDTO;
+import YHWLTH.sharing.dto.response.SharingItemListDTO;
 import YHWLTH.sharing.entity.ItemType;
-import YHWLTH.sharing.repo.custom.ShareItemCustomRepo;
+import YHWLTH.sharing.repo.custom.SharingItemCustomRepo;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,25 +16,30 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 
 import static YHWLTH.sharing.entity.QShareItem.shareItem;
+import static YHWLTH.sharing.entity.QSharingItem.sharingItem;
 
 @RequiredArgsConstructor
-public class ShareItemRepoImpl implements ShareItemCustomRepo {
+public class SharingItemRepoImpl implements SharingItemCustomRepo {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<ShareItemListDTO> shareItemList(PageRequestDTO pageRequestDTO, Long userId) {
+    public Page<SharingItemListDTO> sharingItemList(PageRequestDTO pageRequestDTO, Long userId) {
         Pageable pageable = pageRequestDTO.getPageable();
 
-        List<ShareItemListDTO> content = jpaQueryFactory
-                .select(new QShareItemListDTO(
+        List<SharingItemListDTO> content = jpaQueryFactory
+                .select(new QSharingItemListDTO(
                         shareItem.id,
+                        sharingItem.id,
                         shareItem.itemType,
                         shareItem.rentalFee,
                         shareItem.deposit,
-                        shareItem.isShared
+                        shareItem.isShared,
+                        sharingItem.startDate,
+                        sharingItem.endDate
                 ))
-                .from(shareItem)
+                .from(sharingItem)
+                .leftJoin(sharingItem.shareItem, shareItem)
                 .where(
                         userIdEq(userId),
                         itemTypeEq(pageRequestDTO.getItemType()),
@@ -42,21 +47,26 @@ public class ShareItemRepoImpl implements ShareItemCustomRepo {
                         depositLoe(pageRequestDTO.getDeposit()),
                         rentalFeeLoe(pageRequestDTO.getRentalFee())
                 )
-                .orderBy(shareItem.id.desc())
+                .orderBy(sharingItem.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<ShareItemListDTO> countQuery = jpaQueryFactory
-                .select(new QShareItemListDTO(
+        JPAQuery<SharingItemListDTO> countQuery = jpaQueryFactory
+                .select(new QSharingItemListDTO(
                         shareItem.id,
+                        sharingItem.id,
                         shareItem.itemType,
                         shareItem.rentalFee,
                         shareItem.deposit,
-                        shareItem.isShared
+                        shareItem.isShared,
+                        sharingItem.startDate,
+                        sharingItem.endDate
                 ))
-                .from(shareItem)
+                .from(sharingItem)
+                .leftJoin(sharingItem.shareItem)
                 .where(
+                        userIdEq(userId),
                         itemTypeEq(pageRequestDTO.getItemType()),
                         isShareEq(pageRequestDTO.getIsShared()),
                         depositLoe(pageRequestDTO.getDeposit()),
@@ -67,7 +77,7 @@ public class ShareItemRepoImpl implements ShareItemCustomRepo {
     }
 
     private BooleanExpression userIdEq(Long userId) {
-        return userId == null ? null : shareItem.user.id.eq(userId);
+        return userId == null ? null : sharingItem.user.id.eq(userId);
     }
 
     private BooleanExpression itemTypeEq(ItemType itemType) {

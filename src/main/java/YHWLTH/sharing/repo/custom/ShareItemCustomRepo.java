@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 
 public interface ShareItemCustomRepo {
 
-    Page<ShareItemListDTO> shareItemList(PageRequestDTO pageRequestDTO);
+    Page<ShareItemListDTO> shareItemList(PageRequestDTO pageRequestDTO, Long userId);
 }

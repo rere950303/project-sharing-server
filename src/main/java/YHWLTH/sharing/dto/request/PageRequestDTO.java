@@ -13,9 +13,6 @@ import org.springframework.data.domain.Pageable;
 @NoArgsConstructor
 public class PageRequestDTO {
 
-    @ApiParam(value = "userId", example = "1", defaultValue = "null")
-    private Long userId = null;
-
     @ApiParam(value = "page", example = "1", defaultValue = "1")
     private Integer page = 1;
 
