@@ -1,9 +1,9 @@
 package YHWLTH.sharing.repo.impl;
 
 import YHWLTH.sharing.dto.request.PageRequestDTO;
-import YHWLTH.sharing.dto.response.QShareItemListDTO;
 import YHWLTH.sharing.dto.response.ShareItemListDTO;
 import YHWLTH.sharing.entity.ItemType;
+import YHWLTH.sharing.entity.ShareItem;
 import YHWLTH.sharing.repo.custom.ShareItemCustomRepo;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static YHWLTH.sharing.entity.QShareItem.shareItem;
 
@@ -26,15 +27,8 @@ public class ShareItemRepoImpl implements ShareItemCustomRepo {
     public Page<ShareItemListDTO> shareItemList(PageRequestDTO pageRequestDTO, Long userId) {
         Pageable pageable = pageRequestDTO.getPageable();
 
-        List<ShareItemListDTO> content = jpaQueryFactory
-                .select(new QShareItemListDTO(
-                        shareItem.id,
-                        shareItem.itemType,
-                        shareItem.rentalFee,
-                        shareItem.deposit,
-                        shareItem.isShared
-                ))
-                .from(shareItem)
+        List<ShareItem> shareItems = jpaQueryFactory
+                .selectFrom(shareItem)
                 .where(
                         userIdEq(userId),
                         itemTypeEq(pageRequestDTO.getItemType()),
@@ -47,16 +41,12 @@ public class ShareItemRepoImpl implements ShareItemCustomRepo {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<ShareItemListDTO> countQuery = jpaQueryFactory
-                .select(new QShareItemListDTO(
-                        shareItem.id,
-                        shareItem.itemType,
-                        shareItem.rentalFee,
-                        shareItem.deposit,
-                        shareItem.isShared
-                ))
-                .from(shareItem)
+        List<ShareItemListDTO> content = shareItems.stream().map(shareItem -> new ShareItemListDTO(shareItem)).collect(Collectors.toList());
+
+        JPAQuery<ShareItem> countQuery = jpaQueryFactory
+                .selectFrom(shareItem)
                 .where(
+                        userIdEq(userId),
                         itemTypeEq(pageRequestDTO.getItemType()),
                         isShareEq(pageRequestDTO.getIsShared()),
                         depositLoe(pageRequestDTO.getDeposit()),

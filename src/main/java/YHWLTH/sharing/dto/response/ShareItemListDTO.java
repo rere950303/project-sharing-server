@@ -1,5 +1,6 @@
 package YHWLTH.sharing.dto.response;
 
+import YHWLTH.sharing.entity.ShareItem;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -25,12 +26,17 @@ public class ShareItemListDTO {
     @Schema(description = "공유중 여부", example = "false")
     private Boolean isShared;
 
-    @QueryProjection
-    public ShareItemListDTO(Long shareItemId, String itemType, Long rentalFee, Long deposit, Boolean isShared) {
-        this.shareItemId = shareItemId;
-        this.itemType = itemType;
-        this.rentalFee = rentalFee;
-        this.deposit = deposit;
-        this.isShared = isShared;
+    @Schema(description = "썸네일 이미지", example = "xxxx.png")
+    private String image = "";
+
+    public ShareItemListDTO(ShareItem shareItem) {
+        this.shareItemId = shareItem.getId();
+        this.itemType = shareItem.getItemType();
+        this.rentalFee = shareItem.getRentalFee();
+        this.deposit = shareItem.getDeposit();
+        this.isShared = shareItem.getIsShared();
+        if (!shareItem.getImages().isEmpty()) {
+            this.image = shareItem.getImages().get(0).getStoredFileName();
+        }
     }
 }

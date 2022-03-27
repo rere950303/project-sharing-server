@@ -36,15 +36,15 @@ public class User extends BaseEntity {
 
     private Boolean isPermit;
 
-    private Long point = 0L;
+    private long point = 0L;
 
-    private Long lenderScore = 0L;
+    private long lenderScore = 0L;
 
-    private Integer lenderReviewNum = 0;
+    private int lenderReviewNum = 0;
 
-    private Long borrowerScore = 0L;
+    private long borrowerScore = 0L;
 
-    private Integer borrowerReviewNum = 0;
+    private int borrowerReviewNum = 0;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ShareItem> shareItemList = new ArrayList<>();
@@ -70,11 +70,11 @@ public class User extends BaseEntity {
     }
 
     public void addPoint(Long point) {
-        this.point = this.point + point;
+        this.point += point;
     }
 
     public void minusPoint(Long point) {
-        this.point = this.point - point;
+        this.point -= point;
     }
 
     public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {

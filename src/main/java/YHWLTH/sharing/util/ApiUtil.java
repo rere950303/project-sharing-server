@@ -2,9 +2,14 @@ package YHWLTH.sharing.util;
 
 import YHWLTH.sharing.dto.common.CommonResult;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
-public class ApiUtil {
+public final class ApiUtil {
+
+    private ApiUtil() {
+        throw new AssertionError("생성할 수 없는 클래스입니다.");
+    }
 
     public static final String SUCCESS = "SUCCESS";
     public static final String FAIL = "FAIL";
@@ -12,7 +17,6 @@ public class ApiUtil {
     public static final String SUCCESS_OK = "200";
     public static final String SUCCESS_CREATED = "201";
     public static final String SUCCESS_NO_CONTENT = "204";
-
 
     public static final String FAIL_BAD_REQUEST = "400";
     public static final String FAIL_UNAUTHORIZED = "401";

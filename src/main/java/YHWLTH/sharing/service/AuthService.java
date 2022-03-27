@@ -7,6 +7,7 @@ import YHWLTH.sharing.dto.request.PasswordChangeDTO;
 import YHWLTH.sharing.dto.request.SignUpDTO;
 import YHWLTH.sharing.dto.response.SignUpResponseDTO;
 import YHWLTH.sharing.dto.response.TokenDTO;
+import YHWLTH.sharing.entity.ItemType;
 import YHWLTH.sharing.entity.Role;
 import YHWLTH.sharing.entity.User;
 import YHWLTH.sharing.entity.UserRole;
@@ -54,7 +55,7 @@ public class AuthService {
         if (userRepo.findUserByStudentId(signUpDTO.getStudentId()).orElse(null) != null) {
             throw new AlreadyExistsEx("이미 존재하는 아이디입니다.");
         }
-
+        
         if (!signUpDTO.getPassword().equals(signUpDTO.getPasswordConfirm())) {
             throw new SignUpEx("비밀번호가 일치하지 않습니다.", signUpDTO);
         }
