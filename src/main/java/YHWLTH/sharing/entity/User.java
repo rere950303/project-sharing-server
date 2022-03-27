@@ -36,15 +36,15 @@ public class User extends BaseEntity {
 
     private Boolean isPermit;
 
-    private long point = 0L;
+    private Long point = 0L;
 
-    private long lenderScore = 0L;
+    private Long lenderScore = 0L;
 
-    private int lenderReviewNum = 0;
+    private Integer lenderReviewNum = 0;
 
-    private long borrowerScore = 0L;
+    private Long borrowerScore = 0L;
 
-    private int borrowerReviewNum = 0;
+    private Integer borrowerReviewNum = 0;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ShareItem> shareItemList = new ArrayList<>();
