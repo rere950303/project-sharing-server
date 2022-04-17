@@ -26,7 +26,6 @@ hs_err_pid*
 HELP.md
 out
 docker-compose.yml
-src/test
 .env
 src/main/java/YHWLTH/sharing/init
 build
