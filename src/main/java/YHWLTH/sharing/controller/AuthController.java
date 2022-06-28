@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/authentication")
+@RequestMapping("/api/v1/authentication")
 @RequiredArgsConstructor
 @Api(tags = "AuthController")
 public class AuthController {
@@ -51,7 +51,6 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "로그인 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "로그인", description = "로그인을 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<TokenDTO> login(@Valid @RequestBody LoginDTO loginDTO) throws Exception {
 
         return authService.login(loginDTO);
@@ -60,19 +59,17 @@ public class AuthController {
     @PostMapping("/logout")
     @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     @Operation(summary = "로그아웃", description = "로그아웃을 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CommonResult> logout(HttpServletRequest request) {
 
         return authService.logout(request);
     }
 
-    @PutMapping
+    @PatchMapping
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공", content = @Content(schema = @Schema(implementation = CommonResult.class))),
             @ApiResponse(responseCode = "400", description = "비밀번호 변경 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경을 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CommonResult> changePassword(@Valid @RequestBody PasswordChangeDTO passwordChangeDTO, @ApiIgnore @CurrentUser User user) {
 
         return authService.changePassword(passwordChangeDTO, user);
@@ -85,7 +82,6 @@ public class AuthController {
             @ApiResponse(responseCode = "403", description = "탈퇴 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "탈퇴", description = "탈퇴를 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CommonResult> delete(@PathVariable Long userId, @ApiIgnore @CurrentUser User user, @ApiIgnore HttpServletRequest request) {
 
         return authService.delete(userId, request);

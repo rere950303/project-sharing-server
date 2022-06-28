@@ -28,7 +28,7 @@ import javax.validation.constraints.NotBlank;
 import java.net.MalformedURLException;
 
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/api/v1/board")
 @RequiredArgsConstructor
 @Api(tags = "BoardController")
 @Validated
@@ -44,7 +44,6 @@ public class BoardController {
             @ApiResponse(responseCode = "400", description = "아이템 상세보기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "아이템 상세보기", description = "아이템 상세보기를 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ShareItemReadDTO> read(@PathVariable Long shareItemId) {
         return shareItemService.read(shareItemId);
     }
@@ -55,23 +54,21 @@ public class BoardController {
             @ApiResponse(responseCode = "400", description = "이미지 불러오기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "이미지 불러오기", description = "이미지 로딩을 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Resource> getImage(@RequestParam @NotBlank String imageName) throws MalformedURLException {
         return shareItemService.getImage(imageName);
     }
 
-    @GetMapping("/shareItemList")
+    @GetMapping("/shareitemlist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시판 불러오기 성공"),
             @ApiResponse(responseCode = "400", description = "게시판 불러오기 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
     })
     @Operation(summary = "게시판 불러오기", description = "게시판을 불러오는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemList(@ModelAttribute PageRequestDTO pageRequestDTO) {
         return shareItemService.shareItemList(pageRequestDTO, null);
     }
 
-    @GetMapping("/shareItemList/{userId}")
+    @GetMapping("/shareitemlist/{userId}")
     @PreAuthorize(value = "#user.id == #userId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "개인 게시판 불러오기 성공"),
@@ -79,13 +76,12 @@ public class BoardController {
             @ApiResponse(responseCode = "403", description = "개인 게시판 불러오기 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "개인 게시판 불러오기", description = "개인 게시판을 불러오는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PageResultDTO<ShareItemListDTO>> shareItemListForUser(
             @ModelAttribute PageRequestDTO pageRequestDTO, @CurrentUser @ApiIgnore User user, @PathVariable Long userId) {
         return shareItemService.shareItemList(pageRequestDTO, userId);
     }
 
-    @GetMapping("/sharingItemList/{userId}")
+    @GetMapping("/sharingitemlist/{userId}")
     @PreAuthorize(value = "#user.id == #userId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "빌리고 있는 물품 불러오기 성공"),
@@ -93,13 +89,12 @@ public class BoardController {
             @ApiResponse(responseCode = "403", description = "빌리고 있는 물품 불러오기 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "빌리고 있는 물품 불러오기", description = "빌리고 있는 물품을 불러오는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PageResultDTO<SharingItemListDTO>> sharingItemList(
             @ModelAttribute PageRequestDTO pageRequestDTO, @CurrentUser @ApiIgnore User user, @PathVariable Long userId) {
         return sharingItemService.sharingItemList(pageRequestDTO, userId);
     }
 
-    @GetMapping("/shareApplyList/{userId}")
+    @GetMapping("/shareapplylist/{userId}")
     @PreAuthorize(value = "#user.id == #userId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "공유 신청 게시판 불러오기 성공"),
@@ -107,7 +102,6 @@ public class BoardController {
             @ApiResponse(responseCode = "403", description = "공유 신청 게시판 불러오기 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "공유 신청 게시판 불러오기", description = "공유 신청 게시판을 불러오는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PageResultDTO<ShareApplyListDTO>> shareApplyList(
             @ModelAttribute PageRequestDTO pageRequestDTO, @CurrentUser @ApiIgnore User user, @PathVariable Long userId) {
         return shareApplyService.shareApplyList(pageRequestDTO, userId);

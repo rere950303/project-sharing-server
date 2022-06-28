@@ -22,7 +22,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/review")
+@RequestMapping("/api/v1/review")
 @RequiredArgsConstructor
 @Api(tags = "ReviewController")
 public class ReviewController {
@@ -48,7 +48,6 @@ public class ReviewController {
             @ApiResponse(responseCode = "400", description = "리뷰점수 조회 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "리뷰점수 조회", description = "리뷰점수를 조회하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ReviewScoreDTO> getReviewScore(@PathVariable Long userId) {
         return reviewService.getReviewScore(userId);
     }

@@ -15,10 +15,10 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         String requestURI = request.getRequestURI();
 
-        if (requestURI.equals("/api/authentication/login")) {
-            response.sendRedirect("/api/authentication/error/loginfail");
+        if (requestURI.equals("/api/v1/authentication/login")) {
+            response.sendRedirect("/api/v1/authentication/error/loginfail");
         } else {
-            response.sendRedirect("/api/authentication/error/unauthenticated");
+            response.sendRedirect("/api/v1/authentication/error/unauthenticated");
         }
     }
 }

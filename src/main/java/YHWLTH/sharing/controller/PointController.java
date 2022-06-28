@@ -22,7 +22,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/api/point")
+@RequestMapping("/api/v1/point")
 @RequiredArgsConstructor
 @Api(tags = "PointController")
 @Validated
@@ -47,7 +47,6 @@ public class PointController {
             @ApiResponse(responseCode = "400", description = "포인트 조회 실패", content = @Content(schema = @Schema(implementation = CommonResult.class))),
     })
     @Operation(summary = "포인트 조회", description = "포인트 조회를 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PointDTO> getPoint(@ApiIgnore @CurrentUser User user) {
         return pointService.getPoint(user);
     }

@@ -39,8 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Audi
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    private final String[] whiteList = new String[]{"/api/authentication/login", "/api/authentication/error/loginfail",
-            "/api/authentication/error/unauthenticated", "/api/authentication/signup"};
+    private final String[] whiteList = new String[]{"/api/v1/authentication/login", "/api/v1/authentication/error/loginfail",
+            "/api/v1/authentication/error/unauthenticated", "/api/v1/authentication/signup", "/swagger-resources/**", "/swagger-ui/**", "/v3/**"};
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -74,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Audi
                 .and()
                 .authorizeRequests()
                 .mvcMatchers(whiteList).permitAll()
-                .mvcMatchers("/swagger-resources/**", "/swagger-ui/**", "/v3/**").hasRole("ADMIN")
+//                .mvcMatchers("/swagger-resources/**", "/swagger-ui/**", "/v3/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
 
                 .and()
