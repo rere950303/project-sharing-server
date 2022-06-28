@@ -9,7 +9,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.InputMismatchException;
 
-@RequestMapping("/api/authentication/error")
+@RequestMapping("/api/v1/authentication/error")
 @Controller
 @ApiIgnore
 public class AuthErrorController {

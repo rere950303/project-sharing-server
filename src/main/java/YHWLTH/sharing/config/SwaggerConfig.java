@@ -41,7 +41,7 @@ public class SwaggerConfig {
                 .description("Description for RESTful API of sharing")
                 .license("yhw")
                 .licenseUrl("https://rere950303.github.io")
-                .version("1.5(2022-03-15)")
+                .version("1.5(2022-06-15)")
                 .build();
     }
 }

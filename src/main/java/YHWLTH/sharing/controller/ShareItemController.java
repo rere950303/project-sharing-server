@@ -27,7 +27,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/shareItem")
+@RequestMapping("/api/v1/shareItem")
 @RequiredArgsConstructor
 @Api(tags = "ShareItemController")
 @Validated
@@ -54,7 +54,6 @@ public class ShareItemController {
             @ApiResponse(responseCode = "403", description = "아이템 업데이트 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "아이템 업데이트", description = "아이템 업데이트를 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CommonResult> update(@Valid @ModelAttribute ShareItemUpdateDTO updateDTO, @ApiIgnore @CurrentUser User user) throws IOException {
         return shareItemService.update(updateDTO, user);
     }
@@ -65,7 +64,6 @@ public class ShareItemController {
             @ApiResponse(responseCode = "400", description = "이미지 삭제 실패", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "이미지 삭제", description = "이미지 삭제를 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CommonResult> deleteImage(@RequestParam @NotBlank String imageName) {
         return shareItemService.removeImage(imageName);
     }
@@ -77,7 +75,6 @@ public class ShareItemController {
             @ApiResponse(responseCode = "403", description = "아이템 삭제 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "아이템 삭제", description = "아이템 삭제를 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CommonResult> delete(@PathVariable Long shareItemId, @ApiIgnore @CurrentUser User user) {
         return shareItemService.remove(shareItemId, user);
     }

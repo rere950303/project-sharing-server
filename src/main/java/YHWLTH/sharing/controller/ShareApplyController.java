@@ -21,7 +21,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/apply")
+@RequestMapping("/api/v1/apply")
 @RequiredArgsConstructor
 @Api(tags = "ShareApplyController")
 public class ShareApplyController {
@@ -56,7 +56,6 @@ public class ShareApplyController {
             @ApiResponse(responseCode = "403", description = "아이템 공유신청 삭제 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "아이템 공유신청 삭제", description = "아이템 공유신청 삭제 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CommonResult> delete(@PathVariable Long shareApplyId, @ApiIgnore @CurrentUser User user) {
         return shareApplyService.delete(shareApplyId, user);
     }
@@ -68,7 +67,6 @@ public class ShareApplyController {
             @ApiResponse(responseCode = "403", description = "아이템 공유 완료 권한 없음", content = @Content(schema = @Schema(implementation = CommonResult.class)))
     })
     @Operation(summary = "아이템 공유 완료", description = "아이템 공유 완료를 진행하는 메소드")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CommonResult> complete(@PathVariable Long shareItemId, @ApiIgnore @CurrentUser User user) {
         return shareApplyService.complete(shareItemId, user);
     }
