@@ -1,6 +1,6 @@
 # project-sharing-server
 ## Overview
-당근마켓과 같은 중고품 거래를 넘어 일회성으로 물건을 빌려주고 빌리는 플랫폼을 지원하는 서비스, lender는 사용하지 않는 물건으로 용돈을 벌고 borrower는 일회성 사용으로 구매가 필요없는 제품 체험의 기회 및 값싼 이용이 가능하다는 장점([소스코드](https://github.com/YHW-LTH/project-sharing-server/tree/release/1.0.0))
+당근마켓과 같은 중고품 거래를 넘어 일회성으로 물건을 빌려주고 빌리는 플랫폼을 지원하는 서비스, lender는 사용하지 않는 물건으로 용돈을 벌고 borrower는 일회성 사용으로 구매가 필요없는 제품 체험의 기회 및 값싼 이용이 가능하다는 장점([소스코드](https://github.com/YHW-LTH/project-sharing-server/tree/develop))
 
 ## Role
 - 웹 프론트와 통신을 위한 API 스펙 설계 및 문서화
